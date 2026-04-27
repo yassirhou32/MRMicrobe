@@ -281,7 +281,17 @@ function CurveBackground() {
         animate={{ x: ["0%", "1%", "0%"], y: ["0%", "-0.7%", "0%"] }}
         transition={{ duration: 20, repeat: Infinity, ease: "easeInOut" }}
       />
+      <motion.div
+        className="absolute inset-0 opacity-[0.24]"
+        style={{
+          background:
+            "radial-gradient(760px 380px at 14% 20%, rgba(226,0,116,0.3) 0%, rgba(226,0,116,0.12) 24%, rgba(226,0,116,0) 60%), radial-gradient(920px 460px at 86% 72%, rgba(255,45,149,0.24) 0%, rgba(255,45,149,0.1) 30%, rgba(255,45,149,0) 64%), radial-gradient(640px 320px at 52% 92%, rgba(196,0,98,0.22) 0%, rgba(196,0,98,0.09) 26%, rgba(196,0,98,0) 60%)",
+        }}
+        animate={{ x: ["0%", "0.7%", "0%"], y: ["0%", "-0.6%", "0%"] }}
+        transition={{ duration: 24, repeat: Infinity, ease: "easeInOut" }}
+      />
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_52%,rgba(255,255,255,0.24)_0%,rgba(245,245,245,0)_58%)]" />
+      <div className="absolute inset-0 opacity-[0.14] bg-[radial-gradient(circle_at_22%_24%,rgba(226,0,116,0.36)_0%,rgba(226,0,116,0)_35%),radial-gradient(circle_at_84%_78%,rgba(255,45,149,0.28)_0%,rgba(255,45,149,0)_38%)]" />
       <div className="absolute inset-0 opacity-[0.14] [background-image:linear-gradient(to_right,rgba(255,255,255,0.55)_1px,transparent_1px),linear-gradient(to_bottom,rgba(255,255,255,0.42)_1px,transparent_1px)] [background-size:72px_72px]" />
       <div className="absolute inset-0 opacity-[0.07] [background-image:linear-gradient(to_right,rgba(0,0,0,0.06)_1px,transparent_1px),linear-gradient(to_bottom,rgba(0,0,0,0.05)_1px,transparent_1px)] [background-size:18px_18px]" />
       <div className="absolute inset-0 opacity-[0.055] mix-blend-multiply [background-image:radial-gradient(circle_at_22%_28%,rgba(0,0,0,0.45)_0.65px,transparent_0.85px)] [background-size:3px_3px]" />
@@ -316,12 +326,29 @@ function LeftRail() {
             href="https://www.instagram.com/mrmicrobe.art/"
             target="_blank"
             rel="noreferrer"
-            className="inline-block transition-opacity hover:opacity-70"
+            className="inline-flex items-center gap-2 transition-opacity hover:opacity-70"
           >
+            <svg
+              aria-hidden
+              viewBox="0 0 24 24"
+              className="h-4.5 w-4.5"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="1.8"
+            >
+              <rect x="3.5" y="3.5" width="17" height="17" rx="5" />
+              <circle cx="12" cy="12" r="4.1" />
+              <circle cx="17.2" cy="6.8" r="1.1" fill="currentColor" stroke="none" />
+            </svg>
             Instagram
           </a>
         </div>
-        <p className="text-5xl font-semibold leading-[0.84] tracking-[-0.06em] text-[#0a0a0a]/75">
+        <img
+          src="/images/LOGO-MRMICROBE-3D-TRANSPARENT-removebg-preview.png"
+          alt="Logo Mr Microbe"
+          className="h-auto w-20 object-contain"
+        />
+        <p className="text-4xl font-semibold leading-[0.84] tracking-[-0.06em] text-[#0a0a0a]/75">
           MR
           <br />
           MICROBE
@@ -352,11 +379,18 @@ function MobileMenu({
   return (
     <>
       <div className="fixed inset-x-0 top-0 z-[70] flex items-center justify-between px-5 py-5 lg:hidden">
-        <p className="font-display text-[1.9rem] font-semibold leading-[0.82] tracking-[-0.04em] text-[#0a0a0a]">
-          MR
-          <br />
-          MICROBE
-        </p>
+        <div className="flex items-end gap-2.5">
+          <p className="font-display text-[1.9rem] font-semibold leading-[0.82] tracking-[-0.04em] text-[#0a0a0a]">
+            MR
+            <br />
+            MICROBE
+          </p>
+          <img
+            src="/images/LOGO-MRMICROBE-3D-TRANSPARENT-removebg-preview.png"
+            alt="Logo Mr Microbe"
+            className="h-auto w-11 object-contain"
+          />
+        </div>
         <button
           type="button"
           onClick={onToggle}
@@ -376,11 +410,18 @@ function MobileMenu({
         <div className="absolute inset-0 bg-[#0a0a0a]" />
         <div className="relative flex h-full flex-col px-7 pb-9 pt-6 text-white">
           <div className="flex items-start justify-between">
-            <p className="font-display text-[2rem] font-semibold leading-[0.82] tracking-[-0.04em] text-white/90">
-              MR
-              <br />
-              MICROBE
-            </p>
+            <div className="flex items-end gap-3">
+              <p className="font-display text-[2rem] font-semibold leading-[0.82] tracking-[-0.04em] text-white/90">
+                MR
+                <br />
+                MICROBE
+              </p>
+              <img
+                src="/images/LOGO-MRMICROBE-3D-TRANSPARENT-removebg-preview.png"
+                alt="Logo Mr Microbe"
+                className="h-auto w-12 object-contain"
+              />
+            </div>
             <button
               type="button"
               onClick={onClose}
@@ -406,7 +447,19 @@ function MobileMenu({
           <div className="mt-auto space-y-5 pt-8">
             <div>
               <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-white/35">Socials</p>
-              <div className="mt-2 flex gap-8 text-[1.9rem] font-semibold leading-none">
+              <div className="mt-2 flex items-center gap-3 text-[1.9rem] font-semibold leading-none">
+                <svg
+                  aria-hidden
+                  viewBox="0 0 24 24"
+                  className="h-7 w-7"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="1.8"
+                >
+                  <rect x="3.5" y="3.5" width="17" height="17" rx="5" />
+                  <circle cx="12" cy="12" r="4.1" />
+                  <circle cx="17.2" cy="6.8" r="1.1" fill="currentColor" stroke="none" />
+                </svg>
                 <p>Instagram</p>
               </div>
             </div>
@@ -422,9 +475,9 @@ function MobileMenu({
 }
 
 function Preloader({ done, progress }: { done: boolean; progress: number }) {
-  const title = "MR MICROBE STUDIO";
+  const title = "MR MICROBE";
   const letters = title.split("");
-  const mobileRows = ["MR", "MICROBE", "STUDIO"];
+  const mobileRows = ["MR", "MICROBE"];
   const tiles = Array.from({ length: 108 }, (_, i) => i);
   return (
     <motion.div
@@ -540,6 +593,14 @@ function Preloader({ done, progress }: { done: boolean; progress: number }) {
       />
 
       <div className="relative flex h-full flex-col items-center justify-center gap-6 px-6">
+        <motion.img
+          src="/images/LOGO-MRMICROBE-3D-TRANSPARENT-removebg-preview.png"
+          alt="Logo Mr Microbe"
+          initial={{ opacity: 0, y: 6, scale: 0.96 }}
+          animate={{ opacity: done ? 0 : 0.9, y: done ? -8 : 0, scale: done ? 0.94 : 1 }}
+          transition={{ duration: 0.45, delay: 0.12, ease: "easeOut" }}
+          className="mb-2 h-auto w-20 object-contain md:mb-3 md:w-28"
+        />
         <motion.div
           initial={{ opacity: 0, scale: 0.97 }}
           animate={{ opacity: done ? 0 : 1, scale: done ? 0.98 : 1 }}
@@ -797,8 +858,8 @@ export default function Home() {
               transition={{ duration: 0.65, ease: scrollEase }}
               className="flex flex-col justify-between gap-8"
             >
-              <p className="text-[11px] uppercase tracking-[0.24em] text-[#0a0a0a]/50">Notre vision 3D</p>
-              <p className="text-[11px] uppercase tracking-[0.16em] text-[#0a0a0a]/48">2026.04.25</p>
+              <p className="text-[11px] uppercase tracking-[0.24em] text-[#0a0a0a]/50">&nbsp;</p>
+              <p className="text-[11px] uppercase tracking-[0.16em] text-[#0a0a0a]/48">&nbsp;</p>
             </motion.div>
             <motion.div
               initial={{ opacity: 0, y: 34 }}
@@ -811,7 +872,7 @@ export default function Home() {
                 initial={{ y: 40, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
                 transition={{ duration: 0.9 }}
-                className="font-display relative max-w-4xl text-[clamp(3.2rem,8.9vw,9rem)] font-black italic leading-[0.84] tracking-[-0.06em] text-[#0a0a0a]"
+                className="font-display relative max-w-4xl text-[clamp(3.2rem,8.9vw,9rem)] font-black leading-[0.84] tracking-[-0.06em] text-[#0a0a0a]"
               >
                 <span className="relative z-[1] block">
                   {heroHeadlineLines.map((line, lineIndex) => (
@@ -840,7 +901,7 @@ export default function Home() {
               </motion.h1>
               <div className="grid gap-6 pt-6 md:grid-cols-[1fr_auto] md:items-end">
                 <div>
-                  <p className="text-3xl font-semibold tracking-[-0.03em]">SOLUTIONS ARTISTIQUES — EST. 2026</p>
+                  <p className="text-3xl font-semibold tracking-[-0.03em]">SOLUTIONS ARTISTIQUES</p>
                   <p className="mt-2 max-w-2xl text-sm text-[#0a0a0a]/70">
                     Collections, immersion, direction visuelle: un site plus impactant, plus vivant, plus assume.
                   </p>
@@ -871,7 +932,7 @@ export default function Home() {
 
         <section id="accueil" className="border-t border-[#0a0a0a]/10 bg-transparent px-0 pb-0 pt-4">
           <div className="group relative min-h-[82vh] overflow-hidden border-y border-[#0a0a0a]/10 lg:relative lg:left-[-15rem] lg:w-[calc(100%+15rem)]">
-            <img src={heroImages[0]} alt="Accueil visuel" className="h-[82vh] w-full object-cover grayscale transition duration-700 group-hover:grayscale-0" />
+            <img src={heroImages[0]} alt="Accueil visuel" className="h-[82vh] w-full object-cover transition duration-700" />
             <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(0,0,0,0.18)_0%,rgba(0,0,0,0.38)_78%,rgba(0,0,0,0.6)_100%)]" />
             <div className="absolute inset-0 flex items-center justify-center p-6 text-center md:p-10">
               <h2 className="max-w-5xl font-serif text-[clamp(2.45rem,8vw,7.2rem)] leading-[0.9] text-white/78 drop-shadow-[0_2px_10px_rgba(0,0,0,0.2)]">
@@ -888,12 +949,12 @@ export default function Home() {
             <div className="pointer-events-none absolute inset-0 lg:left-[-15rem] lg:w-[calc(100%+15rem)] bg-[linear-gradient(180deg,rgba(0,0,0,0.1)_0%,rgba(0,0,0,0.045)_40%,rgba(0,0,0,0.0)_100%)]" />
             <div className="pointer-events-none absolute inset-x-0 top-0 h-10 bg-[linear-gradient(180deg,rgba(0,0,0,0.14)_0%,rgba(0,0,0,0)_100%)]" />
             <div>
-              <p className="text-[10px] uppercase tracking-[0.34em] text-[#0a0a0a]/48">Notre vision 3D</p>
+              <p className="text-[10px] uppercase tracking-[0.34em] text-[#0a0a0a]/48">&nbsp;</p>
               <p className="mt-4 max-w-3xl text-[clamp(2rem,4.7vw,4.25rem)] leading-[1.05] tracking-[-0.03em] text-[#0a0a0a]/84">
                 Visualisez votre espace avant meme la premiere sculpture.
               </p>
             </div>
-            <p className="self-center text-right text-[13px] uppercase italic leading-relaxed tracking-[0.08em] text-[#0a0a0a]/58">
+            <p className="self-center text-right text-[13px] uppercase leading-relaxed tracking-[0.08em] text-[#0a0a0a]/58">
               “Des rendus d&apos;une precision artistique pour une validation visuelle acceleree.”
             </p>
           </div>
@@ -911,24 +972,23 @@ export default function Home() {
             </h3>
             <div className="mt-7 grid gap-8 md:grid-cols-[1fr_0.9fr]">
               <div>
-                <p className="max-w-2xl text-[clamp(1.05rem,2.2vw,1.55rem)] font-semibold italic uppercase leading-relaxed text-[#0a0a0a]/88">
+                <p className="max-w-2xl text-[clamp(1.05rem,2.2vw,1.55rem)] font-semibold uppercase leading-relaxed text-[#0a0a0a]/88">
                   Nous accompagnons particuliers et professionnels dans la realisation de leurs projets artistiques:
                   selection, projection, plans d&apos;implantation et mise en scene finale.
                 </p>
-                <a href="#collections" className="mt-6 inline-block border-b-2 border-[#0a0a0a]/35 pb-1 text-[clamp(1.2rem,2vw,1.7rem)] font-semibold">
-                  En savoir plus
+                <a
+                  href="#collections"
+                  className="group relative mt-8 inline-flex items-center gap-3 overflow-hidden rounded-full border border-[#0a0a0a]/18 bg-white px-7 py-3 text-[clamp(0.95rem,1.2vw,1.08rem)] font-semibold tracking-[0.06em] text-[#0a0a0a] transition duration-300 hover:-translate-y-0.5 hover:border-[#0a0a0a]/35 hover:shadow-[0_14px_34px_rgba(10,10,10,0.16)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0a0a0a]/45 focus-visible:ring-offset-2"
+                >
+                  <span className="pointer-events-none absolute inset-x-3 bottom-1.5 h-[2px] origin-left scale-x-0 bg-[#0a0a0a]/70 transition-transform duration-300 group-hover:scale-x-100" />
+                  <span className="relative h-2.5 w-2.5 rounded-full bg-[#0a0a0a] transition-transform duration-300 group-hover:scale-125" />
+                  <span className="relative">En savoir plus</span>
+                  <span aria-hidden className="relative text-lg leading-none transition-transform duration-300 group-hover:translate-x-1">
+                    →
+                  </span>
                 </a>
               </div>
-              <div className="grid grid-cols-2 gap-8 pt-5">
-                <div>
-                  <p className="text-[clamp(2.6rem,5.2vw,4.6rem)] font-semibold leading-none tracking-[-0.04em]">100%</p>
-                  <p className="mt-2 text-[11px] uppercase tracking-[0.2em] text-[#0a0a0a]/50">Conformite</p>
-                </div>
-                <div>
-                  <p className="text-[clamp(2.6rem,5.2vw,4.6rem)] font-semibold leading-none tracking-[-0.04em]">0.0</p>
-                  <p className="mt-2 text-[11px] uppercase tracking-[0.2em] text-[#0a0a0a]/50">Retard</p>
-                </div>
-              </div>
+              <div className="pt-5" />
             </div>
           </div>
         </section>
@@ -944,20 +1004,16 @@ export default function Home() {
                 transition={{ duration: 0.55, delay: index * 0.06 }}
                 className="group overflow-hidden border border-[#0a0a0a]/10 bg-[#0a0a0a]"
               >
-                <img src={src} alt={`Gallery ${index + 1}`} className="h-[72vh] w-full object-cover grayscale transition duration-700 group-hover:scale-[1.02] group-hover:grayscale-0" />
+                <img src={src} alt={`Gallery ${index + 1}`} className="h-[72vh] w-full object-cover transition duration-700 group-hover:scale-[1.02]" />
               </motion.article>
             ))}
           </div>
 
           <div className="relative mx-auto mt-16 max-w-6xl px-3 py-4 md:px-6 md:py-6">
             <div className="pointer-events-none absolute inset-0 opacity-16 [background-image:linear-gradient(to_right,rgba(0,0,0,0.04)_1px,transparent_1px),linear-gradient(to_bottom,rgba(0,0,0,0.03)_1px,transparent_1px)] [background-size:54px_54px]" />
-            <p className="text-[10px] font-black uppercase tracking-[0.34em] text-[#0a0a0a]/46">Editions curatoriales</p>
             <h3 className="mt-1 text-[clamp(3.2rem,8.5vw,8.8rem)] font-semibold uppercase leading-[0.88] tracking-[-0.05em] text-[#0a0a0a]/96">
-              Collections
+              COLLECTIONS <span className="text-[#e20074]">MR MICROBE</span>
             </h3>
-            <p className="-mt-1 text-[clamp(3.1rem,8.3vw,8.2rem)] font-semibold uppercase italic leading-[0.86] tracking-[-0.04em] text-[#0a0a0a]/16">
-              Narratives
-            </p>
 
             <div className="mt-12 border-t border-[#0a0a0a]/10">
               {[
@@ -976,7 +1032,7 @@ export default function Home() {
                   viewport={{ once: true, amount: 0.35 }}
                   transition={{ duration: 0.5, delay: index * 0.05 }}
                   whileHover={{ x: 6 }}
-                  className="group relative grid items-center gap-7 border-b border-[#0a0a0a]/10 px-4 py-10 transition-colors duration-300 hover:bg-[#0a0a0a] md:min-h-[182px] md:grid-cols-[88px_1.35fr_1fr_40px] md:gap-12 md:px-10 md:py-12"
+                  className="group relative grid items-center gap-7 border-b border-[#0a0a0a]/10 px-4 py-10 transition-colors duration-300 hover:bg-[linear-gradient(118deg,rgba(226,0,116,0.94)_0%,rgba(196,0,98,0.9)_48%,rgba(120,0,60,0.9)_100%)] md:min-h-[182px] md:grid-cols-[88px_1.35fr_1fr] md:gap-12 md:px-10 md:py-12"
                 >
                   <span className="pointer-events-none absolute inset-0 bg-[linear-gradient(120deg,transparent_0%,transparent_38%,rgba(255,255,255,0.11)_52%,transparent_66%,transparent_100%)] opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
                   <div className="flex flex-col text-[#0a0a0a]/34 transition-colors duration-300 group-hover:text-white/70">
@@ -989,9 +1045,6 @@ export default function Home() {
                   <p className="max-w-[46ch] text-[clamp(0.9rem,1.08vw,1.16rem)] font-medium leading-[1.5] tracking-[0.01em] text-[#0a0a0a]/62 transition-colors duration-300 group-hover:text-white/72">
                     {item.subtitle}
                   </p>
-                  <span className="justify-self-end text-[clamp(1.25rem,1.7vw,1.7rem)] text-[#0a0a0a]/24 transition duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-white/80">
-                    ↗
-                  </span>
                   <div className="pointer-events-none absolute bottom-4 left-[40%] hidden items-end gap-2 transition duration-300 md:flex md:opacity-55 md:group-hover:translate-x-1 md:group-hover:opacity-100">
                     <span className="h-[1px] w-14 bg-white/0 transition-all duration-300 group-hover:w-20 group-hover:bg-white/72" />
                     <span className="text-[1.3rem] leading-none text-white/0 transition duration-300 group-hover:text-white/82">↘</span>
@@ -1005,9 +1058,6 @@ export default function Home() {
                 <div className="flex items-end justify-between gap-4">
                   <p className="text-[clamp(3.1rem,7.9vw,8rem)] font-semibold uppercase leading-[0.88] tracking-[-0.045em] text-[#0a0a0a]/96">
                     Realisations
-                  </p>
-                  <p className="pb-1 text-[clamp(0.62rem,0.86vw,0.8rem)] font-semibold uppercase italic leading-[1.2] tracking-[0.24em] text-[#0a0a0a]/48">
-                    Extraits de realisations
                   </p>
                 </div>
                 <span className="pointer-events-none absolute left-1/2 top-[62%] -translate-x-1/2 text-[clamp(2rem,2.8vw,2.8rem)] leading-none text-[#0a0a0a]/52">
@@ -1028,7 +1078,7 @@ export default function Home() {
                     <img
                       src={src}
                       alt={`Echantillon collection ${index + 1}`}
-                      className="h-[78vh] w-full object-cover grayscale transition duration-700 group-hover:scale-[1.01] group-hover:grayscale-0"
+                      className="h-[78vh] w-full object-cover transition duration-700 group-hover:scale-[1.01]"
                     />
                   </motion.article>
                 ))}
@@ -1040,11 +1090,10 @@ export default function Home() {
         <section id="artiste" className="bg-transparent px-0 py-10">
           <div className="relative px-6 pb-6 md:px-10">
             <div className="pointer-events-none absolute inset-0 opacity-20 [background-image:linear-gradient(to_right,rgba(0,0,0,0.045)_1px,transparent_1px),linear-gradient(to_bottom,rgba(0,0,0,0.035)_1px,transparent_1px)] [background-size:56px_56px]" />
-            <p className="relative text-[10px] font-black uppercase tracking-[0.34em] text-[#0a0a0a]/46">Direction d&apos;auteur</p>
             <h3 className="relative mt-2 text-[clamp(3.2rem,8.4vw,8.5rem)] font-semibold uppercase leading-[0.88] tracking-[-0.05em] text-[#0a0a0a]/95">
               Artiste
             </h3>
-            <p className="relative -mt-1 text-[clamp(2.9rem,7.6vw,7.6rem)] font-semibold uppercase italic leading-[0.86] tracking-[-0.04em] text-[#0a0a0a]/16">
+            <p className="relative -mt-1 text-[clamp(2.9rem,7.6vw,7.6rem)] font-semibold uppercase leading-[0.86] tracking-[-0.04em] text-[#0a0a0a]/16">
               Signature vivante
             </p>
           </div>
@@ -1060,7 +1109,7 @@ export default function Home() {
               <img
                 src="/images/M7_02148.jpg"
                 alt="Maxime Furgerot - portrait urbain"
-                className="h-[82vh] w-full object-cover object-top grayscale transition duration-700 group-hover:scale-[1.02] group-hover:grayscale-0"
+                className="h-[82vh] w-full object-cover object-top transition duration-700 group-hover:scale-[1.02]"
               />
             </motion.div>
 
@@ -1097,7 +1146,7 @@ export default function Home() {
                   </div>
                   <div className="grid grid-cols-[1fr_auto] border-y border-white/14 py-3.5">
                     <span className="font-sans text-white/52">Style</span>
-                    <span className="font-sans text-white/94">Urbain emotionnel</span>
+                    <span className="font-sans text-white/94">Urbain</span>
                   </div>
                 </div>
               </div>
@@ -1108,25 +1157,15 @@ export default function Home() {
                   <br />
                   Furgerot
                 </h4>
-                <p className="mt-6 max-w-3xl text-[clamp(1.03rem,1.32vw,1.24rem)] italic leading-relaxed text-white/90">{artistStatement}</p>
+                <p className="mt-6 max-w-3xl text-[clamp(1.03rem,1.32vw,1.24rem)] leading-relaxed text-white/90">{artistStatement}</p>
                 <p className="mt-5 max-w-3xl text-[clamp(0.94rem,1.02vw,1.02rem)] leading-[1.75] text-white/74">{artistParagraphs[0]}</p>
-              </div>
-
-              <div className="relative mt-8 overflow-hidden border-y border-white/14 py-2">
-                <motion.p
-                  animate={{ x: ["0%", "-50%"] }}
-                  transition={{ duration: 14, repeat: Infinity, ease: "linear" }}
-                  className="whitespace-nowrap text-[10px] font-bold uppercase tracking-[0.22em] text-white/46"
-                >
-                  Maxime Furgerot - direction visuelle - matiere urbaine - narration emotionnelle - Maxime Furgerot - direction visuelle - matiere urbaine - narration emotionnelle
-                </motion.p>
               </div>
 
               <div className="relative mt-12 overflow-hidden border border-white/14">
                 <img
                   src={heroImages[2]}
                   alt="Univers artistique"
-                  className="h-[38vh] w-full object-cover grayscale transition duration-700 hover:grayscale-0"
+                  className="h-[38vh] w-full object-cover transition duration-700"
                 />
                 <span className="pointer-events-none absolute bottom-6 right-6 text-[clamp(2rem,2.4vw,2.6rem)] leading-none text-white/66">↓</span>
               </div>
@@ -1145,8 +1184,7 @@ export default function Home() {
           <div className="pointer-events-none absolute right-[2%] bottom-[-28%] h-[84%] w-[54%] rounded-[48%] bg-[radial-gradient(ellipse_at_18%_34%,rgba(218,224,236,0.24)_0%,rgba(218,224,236,0.12)_36%,rgba(218,224,236,0)_74%)] blur-[18px]" />
 
           <div className="relative mx-auto max-w-[1320px] px-6 md:px-10">
-            <p className="text-[10px] font-black uppercase tracking-[0.3em] text-white/46">Workflow rigoureux</p>
-            <h3 className="mt-1 text-center text-[clamp(3.6rem,9.6vw,8.8rem)] font-black uppercase italic leading-[0.84] tracking-[-0.05em] text-white">
+            <h3 className="mt-1 text-center text-[clamp(3.6rem,9.6vw,8.8rem)] font-black uppercase leading-[0.84] tracking-[-0.05em] text-white">
               Parcours
             </h3>
 
@@ -1177,9 +1215,6 @@ export default function Home() {
                   <p className="relative mt-2 text-[10px] font-bold uppercase tracking-[0.2em] text-white/48">{step.year}</p>
                 </motion.article>
               ))}
-              <span className="pointer-events-none absolute left-[31%] top-[22%] text-[clamp(2rem,2.8vw,2.8rem)] leading-none text-white/70">
-                ↙
-              </span>
             </div>
           </div>
         </section>
@@ -1200,7 +1235,6 @@ export default function Home() {
 
             <div className="relative grid items-start gap-6 border-b border-[#0a0a0a]/10 pb-6 md:grid-cols-[1.2fr_0.8fr]">
               <div>
-                <p className="text-[10px] font-black uppercase tracking-[0.3em] text-[#0a0a0a]/48">Parcours immersif</p>
                 <p className="mt-3 max-w-3xl text-[clamp(2rem,4.9vw,4.8rem)] font-semibold uppercase leading-[0.95] tracking-[-0.04em] text-[#0a0a0a]/92">
                   Immersion
                 </p>
@@ -1210,19 +1244,17 @@ export default function Home() {
                   Lecture immediate du projet.
                 </p>
               </div>
-              <p className="self-center text-right text-[13px] font-semibold uppercase italic leading-relaxed tracking-[0.08em] text-[#0a0a0a]/56">
-                “Une immersion claire, precise et coherente.”
-              </p>
+              <p className="self-center text-right text-[13px] font-semibold uppercase leading-relaxed tracking-[0.08em] text-[#0a0a0a]/56" />
             </div>
 
-            <p className="relative mx-auto mt-8 max-w-6xl text-center font-serif text-[clamp(2.1rem,5.8vw,6rem)] italic leading-[1.08] tracking-[-0.02em] text-[#0a0a0a]/86">
+            <p className="relative mx-auto mt-8 max-w-6xl text-center font-serif text-[clamp(2.1rem,5.8vw,6rem)] leading-[1.08] tracking-[-0.02em] text-[#0a0a0a]/86">
               “Lecture du lieu, curation, projection et installation: une immersion claire, precise et coherente.”
             </p>
             <div className="group relative left-1/2 mt-10 w-screen -translate-x-1/2 overflow-hidden lg:-ml-[15rem] lg:w-[calc(100vw+15rem)]">
               <img
                 src="/images/M7_01373.jpg"
                 alt="Immersion claire precise coherente"
-                className="h-[46vh] min-h-[320px] w-full object-cover grayscale transition duration-700 group-hover:grayscale-0 md:h-[68vh]"
+                className="h-[46vh] min-h-[320px] w-full object-cover transition duration-700 md:h-[68vh]"
               />
               <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(118deg,rgba(0,0,0,0.34)_0%,rgba(0,0,0,0.14)_36%,rgba(255,255,255,0.08)_58%,rgba(0,0,0,0.24)_100%)]" />
               <motion.div
@@ -1242,7 +1274,7 @@ export default function Home() {
                 whileInView={{ opacity: 1, x: 0 }}
                 viewport={{ once: true, amount: 0.5 }}
                 transition={{ duration: 0.6 }}
-                className="pointer-events-none absolute right-0 top-1 text-[clamp(2.2rem,8vw,7.2rem)] font-black uppercase italic leading-none tracking-[-0.05em] text-[#0a0a0a]/10"
+                className="pointer-events-none absolute right-0 top-1 text-[clamp(2.2rem,8vw,7.2rem)] font-black uppercase leading-none tracking-[-0.05em] text-[#0a0a0a]/10"
               >
                 4 etapes
               </motion.span>
@@ -1302,7 +1334,7 @@ export default function Home() {
               <img
                 src="/images/M7_01387.jpg"
                 alt="Immersion detail"
-                className="h-[62vh] min-h-[420px] w-full object-cover grayscale transition duration-700 group-hover:grayscale-0 md:h-[82vh]"
+                className="h-[62vh] min-h-[420px] w-full object-cover transition duration-700 md:h-[82vh]"
               />
             </div>
           </div>
@@ -1315,7 +1347,7 @@ export default function Home() {
               <h3 className="mt-2 text-[clamp(2.5rem,6.3vw,6.2rem)] font-semibold uppercase leading-[0.88] tracking-[-0.05em] text-[#0a0a0a]/92">
                 Questions
               </h3>
-              <p className="-mt-1 text-[clamp(2.3rem,6vw,5.7rem)] font-semibold uppercase italic leading-[0.86] tracking-[-0.04em] text-[#0a0a0a]/14">
+              <p className="-mt-1 text-[clamp(2.3rem,6vw,5.7rem)] font-semibold uppercase leading-[0.86] tracking-[-0.04em] text-[#0a0a0a]/14">
                 Reponses claires
               </p>
             </div>
@@ -1331,10 +1363,10 @@ export default function Home() {
                     index % 2 === 0 ? "md:border-r md:border-[#0a0a0a]/12" : ""
                   } ${index > 1 ? "border-t border-[#0a0a0a]/12 md:col-span-2 md:border-r-0 md:mx-auto md:w-full md:max-w-[620px]" : ""}`}
                 >
-                  <span className="block text-[clamp(1rem,1.5vw,1.4rem)] font-black italic text-[#0a0a0a]/22">
+                  <span className="block text-[clamp(1rem,1.5vw,1.4rem)] font-black text-[#0a0a0a]/22">
                     ({String(index + 1).padStart(2, "0")})
                   </span>
-                  <p className="mt-2 font-serif text-[clamp(1.7rem,2.5vw,2.6rem)] italic leading-[1.1] text-[#0a0a0a]/78">{item.q}</p>
+                  <p className="mt-2 font-serif text-[clamp(1.7rem,2.5vw,2.6rem)] leading-[1.1] text-[#0a0a0a]/78">{item.q}</p>
                   <p className="mx-auto mt-3 max-w-[42ch] text-[clamp(0.98rem,1.05vw,1.15rem)] leading-[1.62] text-[#0a0a0a]/58">{item.a}</p>
                 </motion.article>
               ))}
@@ -1353,7 +1385,7 @@ export default function Home() {
             >
               <div>
                 <p className="text-[10px] font-black uppercase tracking-[0.32em] text-[#0a0a0a]/45">Contact</p>
-                <h3 className="mt-4 text-[clamp(3rem,8.6vw,8rem)] font-black uppercase italic leading-[0.86] tracking-[-0.05em] text-[#0a0a0a]">
+                <h3 className="mt-4 text-[clamp(3rem,8.6vw,8rem)] font-black uppercase leading-[0.86] tracking-[-0.05em] text-[#0a0a0a]">
                   Lancez
                   <br />
                   votre
