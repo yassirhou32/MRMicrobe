@@ -1,15 +1,28 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { motion, useScroll, useSpring, useTransform } from "framer-motion";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 
 const heroImages = [
-  "/images/M7_02134.jpg",
+  "/images/Image 1.png",
   "/images/M7_02137.jpg",
   "/images/M7_02162.jpg",
   "/images/M7_01627.jpg",
   "/images/M7_01636.jpg",
   "/images/M7_02104.jpg",
+];
+
+const realisationImages = ["/images/M7_01625.jpg", "/images/M7_03110.jpg", "/images/M7_03103.jpg", "/images/Image 4.png"];
+
+const publicGalleryImages = [
+  "/images/Image 7.png",
+  "/images/Image 8.png",
+  "/images/Image 9.png",
+  "/images/Image 10.png",
+  "/images/Image 11.png",
+  "/images/Image 12.png",
 ];
 
 const collections = [
@@ -237,6 +250,428 @@ const projectShowcases = [
 
 const scrollEase = [0.16, 1, 0.3, 1] as const;
 
+interface ParcoursConceptItem {
+  title: string;
+  detail: string;
+  image: string;
+}
+
+type FlipPhase = "idle" | "logo" | "detail";
+
+function ParcoursFlipExperience({
+  items = [
+    { title: "Origine", detail: "Premiers dessins, premiers contrastes, premieres formes.", image: "/images/M7_01625.jpg" },
+    { title: "Technique", detail: "Apprentissage du geste, des reliefs, des patines et de la discipline.", image: "/images/M7_03110.jpg" },
+    { title: "Signature Mr Microbe", detail: "Naissance d'un style direct, organique et reconnaissable.", image: "/images/M7_03103.jpg" },
+    { title: "Direction artistique", detail: "Collections privees, installations et projets sur mesure.", image: "/images/M7_01636.jpg" },
+  ],
+}: {
+  items?: ParcoursConceptItem[];
+}) {
+  const [activeIndex, setActiveIndex] = useState(0);
+  const [flipState, setFlipState] = useState<Record<number, FlipPhase>>({});
+  const [loadingProgress, setLoadingProgress] = useState<Record<number, number>>({});
+  const revealTimersRef = useRef<Record<number, number>>({});
+  const loadingIntervalsRef = useRef<Record<number, number>>({});
+
+  useEffect(() => {
+    return () => {
+      Object.values(revealTimersRef.current).forEach((timerId) => window.clearTimeout(timerId));
+      Object.values(loadingIntervalsRef.current).forEach((intervalId) => window.clearInterval(intervalId));
+    };
+  }, []);
+
+  const queueActive = (index: number) => {
+    setActiveIndex(index);
+  };
+
+  const flipCard = (index: number) => {
+    if (revealTimersRef.current[index]) window.clearTimeout(revealTimersRef.current[index]);
+    if (loadingIntervalsRef.current[index]) window.clearInterval(loadingIntervalsRef.current[index]);
+
+    setFlipState((prev) => ({ ...prev, [index]: "logo" }));
+    setLoadingProgress((prev) => ({ ...prev, [index]: 0 }));
+
+    loadingIntervalsRef.current[index] = window.setInterval(() => {
+      setLoadingProgress((prev) => {
+        const current = prev[index] ?? 0;
+        const next = Math.min(96, current + 4);
+        return { ...prev, [index]: next };
+      });
+    }, 70);
+
+    revealTimersRef.current[index] = window.setTimeout(() => {
+      if (loadingIntervalsRef.current[index]) window.clearInterval(loadingIntervalsRef.current[index]);
+      setLoadingProgress((prev) => ({ ...prev, [index]: 100 }));
+      setFlipState((prev) => ({ ...prev, [index]: "detail" }));
+    }, 2200);
+  };
+
+  const resetCard = (index: number) => {
+    if (revealTimersRef.current[index]) window.clearTimeout(revealTimersRef.current[index]);
+    if (loadingIntervalsRef.current[index]) window.clearInterval(loadingIntervalsRef.current[index]);
+    setFlipState((prev) => ({ ...prev, [index]: "idle" }));
+    setLoadingProgress((prev) => ({ ...prev, [index]: 0 }));
+  };
+
+  return (
+    <section className="relative overflow-hidden border-y border-white/12 bg-[#04070d] px-0 py-12 text-white md:py-16 lg:relative lg:left-[-15rem] lg:w-[calc(100%+15rem)]">
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_14%_20%,rgba(255,255,255,0.1)_0%,rgba(255,255,255,0)_48%),radial-gradient(circle_at_86%_76%,rgba(255,255,255,0.08)_0%,rgba(255,255,255,0)_46%),linear-gradient(180deg,rgba(4,7,13,0.98)_0%,rgba(1,3,8,1)_100%)]" />
+      <div className="pointer-events-none absolute inset-0 opacity-10 [background-image:linear-gradient(to_right,rgba(255,255,255,0.08)_1px,transparent_1px),linear-gradient(to_bottom,rgba(255,255,255,0.06)_1px,transparent_1px)] [background-size:52px_52px]" />
+
+      <div className="relative mx-auto max-w-[1380px] px-6 md:px-10">
+        <p className="text-[10px] font-mono uppercase tracking-[0.34em] text-white/46">Creative evolution</p>
+        <h3 className="title-unified mt-2 font-black uppercase text-white">Parcours</h3>
+        <div className="mt-3 h-px w-full max-w-[220px] bg-white/20" />
+
+        <div className="mt-8 flex gap-4 overflow-x-auto pb-2 md:overflow-visible">
+            {items.map((item, index) => {
+              const phase = flipState[index] ?? "idle";
+              const flipped = phase !== "idle";
+              const active = activeIndex === index;
+
+              return (
+                <div
+                  key={item.title}
+                  className={`group relative h-[400px] min-w-[230px] [perspective:1200px] md:h-[480px] md:min-w-0 ${
+                    active ? "z-10" : "z-[1]"
+                  }`}
+                  style={{
+                    perspective: "1200px",
+                    flexBasis: 0,
+                    flexGrow: active ? 1.75 : 1,
+                    transition: "flex-grow 90ms linear",
+                  }}
+                  onPointerEnter={() => setActiveIndex(index)}
+                  onMouseEnter={() => queueActive(index)}
+                  onFocus={() => queueActive(index)}
+                  onClick={() => setActiveIndex(index)}
+                  tabIndex={0}
+                >
+                  <motion.div
+                    animate={{ rotateY: flipped ? 180 : 0 }}
+                    transition={{ duration: 0.75, ease: [0.16, 1, 0.3, 1] }}
+                    className="relative h-full w-full rounded-2xl border border-white/20 transform-gpu"
+                    style={{ transformStyle: "preserve-3d", WebkitTransformStyle: "preserve-3d", willChange: "transform" }}
+                  >
+                    <div
+                      className="absolute inset-0 overflow-hidden rounded-2xl"
+                      style={{
+                        backfaceVisibility: "hidden",
+                        WebkitBackfaceVisibility: "hidden",
+                        transform: "rotateY(0deg) translateZ(1px)",
+                        WebkitTransform: "rotateY(0deg) translateZ(1px)",
+                      }}
+                    >
+                      <img
+                        src={item.image}
+                        alt={item.title}
+                        className="h-full w-full object-cover"
+                      />
+                      <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(0,0,0,0.18)_0%,rgba(0,0,0,0.62)_100%)]" />
+                      <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(118deg,rgba(255,255,255,0.08)_0%,rgba(255,255,255,0)_34%,rgba(255,255,255,0.16)_52%,rgba(255,255,255,0)_72%,rgba(255,255,255,0.08)_100%)]" />
+                      <div className="absolute bottom-0 left-0 w-full p-7 md:p-8">
+                        <p className="text-[10px] font-mono uppercase tracking-[0.2em] text-white/56">{String(index + 1).padStart(2, "0")}</p>
+                        <p className="mt-1 text-[clamp(1.3rem,2.4vw,1.9rem)] font-black uppercase leading-[0.95] tracking-[-0.03em] text-white">
+                          {item.title}
+                        </p>
+                        <button
+                          type="button"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            flipCard(index);
+                          }}
+                          className="mt-3 border-b border-white/72 pb-1 text-[11px] font-semibold uppercase tracking-[0.14em] text-white transition-opacity hover:opacity-85"
+                        >
+                          Découvrir
+                        </button>
+                      </div>
+                    </div>
+
+                    <div
+                      className="absolute inset-0 rounded-2xl border border-white/18 bg-[linear-gradient(160deg,#050814_0%,#02040a_56%,#000205_100%)] p-5 shadow-[inset_0_0_0_1px_rgba(255,255,255,0.06),0_20px_50px_rgba(0,0,0,0.45)]"
+                      style={{
+                        backfaceVisibility: "hidden",
+                        WebkitBackfaceVisibility: "hidden",
+                        transform: "rotateY(180deg) translateZ(1px)",
+                        WebkitTransform: "rotateY(180deg) translateZ(1px)",
+                      }}
+                    >
+                      {phase === "logo" ? (
+                        <div className="flex h-full flex-col items-center justify-center text-center">
+                          <div className="mb-4 h-px w-20 bg-white/28" />
+                          <img
+                            src="/images/LOGO-MRMICROBE-3D-TRANSPARENT-removebg-preview.png"
+                            alt="Logo Mr Microbe"
+                            className="h-auto w-24 object-contain"
+                          />
+                          <p className="mt-4 text-[clamp(1.4rem,2.2vw,2rem)] font-black uppercase tracking-[-0.03em] text-white">Mr. Microbe</p>
+                          <p className="mt-1 text-[10px] font-mono uppercase tracking-[0.22em] text-white/50">Creative signature</p>
+                          <div className="mt-4 h-px w-20 bg-white/28" />
+                          <p className="mt-4 text-[10px] font-mono uppercase tracking-[0.22em] text-[#ff7ec7]">
+                            Chargement {String(Math.round(loadingProgress[index] ?? 0)).padStart(2, "0")}%
+                          </p>
+                          <div className="mt-2 h-1.5 w-44 overflow-hidden rounded-full bg-[#ff7ec7]/22 ring-1 ring-[#ff7ec7]/35">
+                            <div
+                              className="h-full rounded-full bg-[linear-gradient(90deg,#ff2fa3_0%,#ff7ec7_55%,#ffd0ea_100%)] shadow-[0_0_14px_rgba(255,71,170,0.75)] transition-[width] duration-75 ease-linear"
+                              style={{ width: `${loadingProgress[index] ?? 0}%` }}
+                            />
+                          </div>
+                        </div>
+                      ) : (
+                        <div className="relative flex h-full flex-col justify-between overflow-hidden rounded-xl border border-white/14 bg-[linear-gradient(145deg,rgba(255,255,255,0.09)_0%,rgba(255,255,255,0.02)_38%,rgba(0,0,0,0.55)_100%)] p-4">
+                          <div className="pointer-events-none absolute -left-10 -top-10 h-32 w-32 rounded-full bg-white/10 blur-2xl" />
+                          <div className="pointer-events-none absolute -bottom-12 -right-10 h-36 w-36 rounded-full bg-white/8 blur-2xl" />
+                          <div>
+                            <p className="text-[10px] font-mono uppercase tracking-[0.22em] text-white/55">
+                              {String(index + 1).padStart(2, "0")} / 04
+                            </p>
+                            <p className="mt-2 text-[clamp(1.25rem,2.2vw,1.8rem)] font-black uppercase leading-[0.95] tracking-[-0.03em] text-white">
+                              {item.title}
+                            </p>
+                            <div className="mt-3 h-px w-full bg-white/18" />
+                            <p className="mt-4 text-[0.92rem] font-semibold uppercase leading-[1.45] tracking-[0.09em] text-white/70">{item.detail}</p>
+                            <div className="mt-5 flex flex-wrap gap-2">
+                              <span className="rounded-full border border-white/20 bg-white/10 px-2.5 py-1 text-[10px] font-mono uppercase tracking-[0.16em] text-white/60">
+                                Signature
+                              </span>
+                              <span className="rounded-full border border-white/20 bg-white/10 px-2.5 py-1 text-[10px] font-mono uppercase tracking-[0.16em] text-white/60">
+                                Collection
+                              </span>
+                            </div>
+                          </div>
+                          <button
+                            type="button"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              resetCard(index);
+                            }}
+                            className="w-fit border-b border-white/70 pb-1 text-[11px] font-semibold uppercase tracking-[0.14em] text-white transition-colors hover:text-white/80"
+                          >
+                            Retour
+                          </button>
+                        </div>
+                      )}
+                    </div>
+                  </motion.div>
+                </div>
+              );
+            })}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+interface DragonItem {
+  title: string;
+  image: string;
+}
+
+interface UiloraDragonScrollProps {
+  items?: DragonItem[];
+  heroTitle?: string;
+  outroTitle?: string;
+}
+
+interface GalleryFilmStripProps {
+  images?: string[];
+  backgroundColor?: string;
+  borderColor?: string;
+}
+
+function UiloraDragonScroll({
+  items = [],
+  heroTitle = "Awaken the Dragons",
+  outroTitle = "The End of Legends",
+}: UiloraDragonScrollProps) {
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    gsap.registerPlugin(ScrollTrigger);
+
+    const ctx = gsap.context(() => {
+      const workItems = gsap.utils.toArray<HTMLElement>(".uilora-work-item");
+
+      workItems.forEach((item) => {
+        const img = item.querySelector(".uilora-img-wrapper");
+        const chars = item.querySelectorAll(".uilora-char");
+
+        chars.forEach((char, index) => {
+          gsap.fromTo(
+            char,
+            { y: "125%" },
+            {
+              y: "0%",
+              ease: "none",
+              scrollTrigger: {
+                trigger: item,
+                start: `top+=${index * 20 - 250} top`,
+                end: `top+=${index * 20 - 100} top`,
+                scrub: 1,
+              },
+            }
+          );
+        });
+
+        if (!img) return;
+
+        gsap.fromTo(
+          img,
+          { clipPath: "polygon(25% 25%, 75% 40%, 100% 100%, 0% 100%)" },
+          {
+            clipPath: "polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)",
+            ease: "none",
+            scrollTrigger: {
+              trigger: item,
+              start: "top bottom",
+              end: "top top",
+              scrub: 0.5,
+            },
+          }
+        );
+
+        gsap.fromTo(
+          img,
+          { clipPath: "polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)" },
+          {
+            clipPath: "polygon(0% 0%, 100% 0%, 75% 60%, 25% 75%)",
+            ease: "none",
+            scrollTrigger: {
+              trigger: item,
+              start: "bottom bottom",
+              end: "bottom top",
+              scrub: 0.5,
+            },
+          }
+        );
+      });
+    }, containerRef);
+
+    return () => {
+      ctx.revert();
+      ScrollTrigger.getAll().forEach((t) => t.kill());
+    };
+  }, [items]);
+
+  return (
+    <div ref={containerRef} className="overflow-x-hidden bg-transparent font-serif text-[#141414]">
+      {items.map((item, idx) => (
+        <section key={idx} className="uilora-work-item relative h-[150vh] w-full overflow-hidden">
+          <div className="uilora-img-wrapper absolute inset-0 h-full w-full will-change-[clip-path]">
+            <img
+              src={item.image}
+              alt={item.title}
+              className={`h-full w-full object-cover ${idx === 0 ? "object-[center_24%]" : ""}`}
+            />
+          </div>
+        </section>
+      ))}
+    </div>
+  );
+}
+
+function RealisationScrollStack() {
+  const dragonData = [
+    { title: "Crimson Wyvern", image: realisationImages[0] },
+    { title: "Shadow Drakon", image: realisationImages[1] },
+    { title: "Azure Flame", image: realisationImages[2] },
+    { title: "Obsidian King", image: realisationImages[3] },
+  ];
+
+  return <UiloraDragonScroll items={dragonData} heroTitle="Uilora Legends" outroTitle="The Digital Frontier" />;
+}
+
+function GalleryFilmStrip({
+  images = [
+    "/images/Image 1.png",
+    "/images/Image 2.png",
+    "/images/Image 3.png",
+    "/images/Image 4.png",
+    "/images/Image 5.png",
+    "/images/Image 6.png",
+    "/images/Image 7.png",
+    "/images/Image 8.png",
+    "/images/Image 9.png",
+    "/images/Image 10.png",
+    "/images/Image 11.png",
+    "/images/Image 12.png",
+  ],
+  backgroundColor = "transparent",
+  borderColor = "rgba(255,255,255,0.18)",
+}: GalleryFilmStripProps) {
+  const { scrollYProgress } = useScroll();
+  const x1Raw = useTransform(scrollYProgress, [0, 1], [0, -680]);
+  const x2Raw = useTransform(scrollYProgress, [0, 1], [-680, 0]);
+  const x1 = useSpring(x1Raw, { stiffness: 85, damping: 22, mass: 0.7 });
+  const x2 = useSpring(x2Raw, { stiffness: 85, damping: 22, mass: 0.7 });
+
+  return (
+    <div className="relative flex min-h-screen h-[200vh] flex-col justify-center gap-10 overflow-hidden" style={{ backgroundColor }}>
+      <div className="sticky top-0 flex h-screen flex-col justify-center gap-12">
+        <div
+          className="w-full -rotate-3 bg-black/70 py-3 shadow-[0_18px_40px_rgba(0,0,0,0.28)] backdrop-blur-[1px]"
+          style={{ borderTop: `4px solid ${borderColor}`, borderBottom: `4px solid ${borderColor}` }}
+        >
+          <motion.div style={{ x: x1 }} className="flex w-[220vw] gap-6">
+            {[...images, ...images].map((src, i) => (
+              <div key={i} className="relative aspect-video w-[26rem] shrink-0 rounded-sm bg-neutral-800">
+                <img src={src} className="h-full w-full object-cover opacity-95" alt="" />
+                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent opacity-0 transition-opacity hover:opacity-100" />
+                <div className="absolute -top-6 left-0 flex h-4 w-full justify-between bg-transparent px-2">
+                  {Array(10)
+                    .fill(0)
+                    .map((_, j) => (
+                      <div key={j} className="h-3 w-2 rounded-sm bg-white/20" />
+                    ))}
+                </div>
+                <div className="absolute -bottom-6 left-0 flex h-4 w-full justify-between bg-transparent px-2">
+                  {Array(10)
+                    .fill(0)
+                    .map((_, j) => (
+                      <div key={j} className="h-3 w-2 rounded-sm bg-white/20" />
+                    ))}
+                </div>
+              </div>
+            ))}
+          </motion.div>
+        </div>
+
+        <div
+          className="z-10 w-full rotate-3 bg-black/70 py-3 shadow-[0_18px_40px_rgba(0,0,0,0.28)] backdrop-blur-[1px]"
+          style={{ borderTop: `4px solid ${borderColor}`, borderBottom: `4px solid ${borderColor}` }}
+        >
+          <motion.div style={{ x: x2 }} className="ml-[-60vw] flex w-[220vw] gap-6">
+            {[...images, ...images]
+              .reverse()
+              .map((src, i) => (
+                <div key={i} className="relative aspect-video w-[26rem] shrink-0 rounded-sm bg-neutral-800">
+                  <img src={src} className="h-full w-full object-cover opacity-95" alt="" />
+                  <div className="absolute -top-6 left-0 flex h-4 w-full justify-between bg-transparent px-2">
+                    {Array(10)
+                      .fill(0)
+                      .map((_, j) => (
+                        <div key={j} className="h-3 w-2 rounded-sm bg-white/20" />
+                      ))}
+                  </div>
+                  <div className="absolute -bottom-6 left-0 flex h-4 w-full justify-between bg-transparent px-2">
+                    {Array(10)
+                      .fill(0)
+                      .map((_, j) => (
+                        <div key={j} className="h-3 w-2 rounded-sm bg-white/20" />
+                      ))}
+                  </div>
+                </div>
+              ))}
+          </motion.div>
+        </div>
+
+        <div className="pointer-events-none absolute inset-0 bg-gradient-to-r from-black/35 via-transparent to-black/35" />
+      </div>
+    </div>
+  );
+}
+
 function CurveBackground() {
   return (
     <div aria-hidden className="pointer-events-none fixed inset-0 z-0 overflow-hidden bg-[#f5f5f5]">
@@ -343,17 +778,19 @@ function LeftRail() {
             Instagram
           </a>
         </div>
-        <img
-          src="/images/LOGO-MRMICROBE-3D-TRANSPARENT-removebg-preview.png"
-          alt="Logo Mr Microbe"
-          className="h-auto w-20 object-contain"
-        />
-        <p className="text-4xl font-semibold leading-[0.84] tracking-[-0.06em] text-[#0a0a0a]/75">
-          MR
-          <br />
-          MICROBE
-        </p>
-        <p className="max-w-full break-all text-[11px] leading-tight">mrmicrobe.furgerot@gmail.com</p>
+        <div className="space-y-3">
+          <img
+            src="/images/LOGO-MRMICROBE-3D-TRANSPARENT-removebg-preview.png"
+            alt="Logo Mr Microbe"
+            className="h-auto w-20 object-contain"
+          />
+          <p className="text-4xl font-semibold leading-[0.84] tracking-[-0.06em] text-[#0a0a0a]/75">
+            MR
+            <br />
+            MICROBE
+          </p>
+        </div>
+        <p className="max-w-full break-all text-[11px] leading-tight text-[#0a0a0a]/76">mrmicrobe.furgerot@gmail.com</p>
       </div>
     </aside>
   );
@@ -574,14 +1011,6 @@ function Preloader({ done, progress }: { done: boolean; progress: number }) {
           <div className="absolute h-[min(64vh,780px)] w-[1px] bg-[#0a0a0a]/18" />
         </motion.div>
 
-        <motion.div
-          aria-hidden
-          className="absolute left-[8vw] top-[9vh] text-[10px] font-semibold uppercase tracking-[0.24em] text-[#0a0a0a]/42"
-          animate={{ opacity: done ? 0 : [0.35, 0.65, 0.35] }}
-          transition={{ duration: 4.4, repeat: Infinity, ease: "easeInOut" }}
-        >
-          Studio Direction / Signature Build
-        </motion.div>
       </div>
 
       <motion.div
@@ -639,7 +1068,9 @@ function Preloader({ done, progress }: { done: boolean; progress: number }) {
                         delay: 0.15 + (rowIndex * 8 + charIndex) * 0.05,
                         ease: [0.16, 1, 0.3, 1],
                       }}
-                      className="inline-flex h-9 w-9 items-center justify-center border-2 border-[#0a0a0a]/38 bg-white/34 text-[0.96rem] font-semibold uppercase tracking-[0.08em] text-[#0a0a0a]"
+                      className={`inline-flex h-9 w-9 items-center justify-center border-2 border-[#0a0a0a]/38 bg-white/34 text-[0.96rem] font-semibold uppercase tracking-[0.08em] ${
+                        rowIndex < 2 ? "text-[#e20074]" : "text-[#0a0a0a]"
+                      }`}
                     >
                       {char}
                     </motion.span>
@@ -659,8 +1090,8 @@ function Preloader({ done, progress }: { done: boolean; progress: number }) {
                   delay: 0.15 + index * 0.05,
                   ease: [0.16, 1, 0.3, 1],
                 }}
-                className={`inline-flex h-12 items-center justify-center border-2 border-[#0a0a0a]/38 bg-white/34 px-3 text-[clamp(1.05rem,2.9vw,1.75rem)] font-semibold uppercase tracking-[0.2em] text-[#0a0a0a] ${
-                  char === " " ? "border-transparent bg-transparent px-2.5" : ""
+                className={`inline-flex h-12 items-center justify-center border-2 border-[#0a0a0a]/38 bg-white/34 px-3 text-[clamp(1.05rem,2.9vw,1.75rem)] font-semibold uppercase tracking-[0.2em] ${
+                  char === " " ? "border-transparent bg-transparent px-2.5 text-[#0a0a0a]" : index <= 9 ? "text-[#e20074]" : "text-[#0a0a0a]"
                 }`}
               >
                 {char === " " ? "\u00A0" : char}
@@ -692,40 +1123,6 @@ function Preloader({ done, progress }: { done: boolean; progress: number }) {
           transition={{ duration: 0.5, delay: 0.75, ease: "easeOut" }}
           className="h-px bg-[#0a0a0a]"
         />
-        <motion.p
-          initial={{ y: 8, opacity: 0 }}
-          animate={{ y: done ? -10 : 0, opacity: done ? 0 : 0.62 }}
-          transition={{ duration: 0.46, delay: 0.88, ease: "easeOut" }}
-          className="text-[10px] uppercase tracking-[0.24em] text-[#0a0a0a]/70"
-        >
-          loading intro sequence
-        </motion.p>
-
-        <motion.div
-          initial={{ opacity: 0, y: 8 }}
-          animate={{ opacity: done ? 0 : 0.92, y: done ? -8 : 0 }}
-          transition={{ duration: 0.38, delay: 0.95 }}
-          className="mt-1 flex items-center gap-3"
-        >
-          <div className="h-1.5 w-36 overflow-hidden rounded-full border border-[#0a0a0a]/25 bg-white/40">
-            <motion.div
-              animate={{ width: `${progress}%` }}
-              transition={{ duration: 0.25, ease: "linear" }}
-              className="h-full bg-[#0a0a0a]"
-            />
-          </div>
-          <span className="min-w-12 text-right text-[11px] font-semibold tracking-[0.12em] text-[#0a0a0a]/80">
-            {String(progress).padStart(3, "0")}%
-          </span>
-        </motion.div>
-        <motion.p
-          initial={{ opacity: 0 }}
-          animate={{ opacity: done ? 0 : 0.6 }}
-          transition={{ duration: 0.3, delay: 0.95 }}
-          className="text-[9px] uppercase tracking-[0.22em] text-[#0a0a0a]/70"
-        >
-          prepare layout and assets
-        </motion.p>
       </div>
     </motion.div>
   );
@@ -770,12 +1167,129 @@ function ScrollArrowCursor() {
   );
 }
 
+interface GalleryDiagonalMarqueeProps {
+  row1Images?: string[];
+  row2Images?: string[];
+  row3Images?: string[];
+  backgroundColor?: string;
+  badgePrefix?: string;
+}
+
+function GalleryDiagonalMarquee({
+  row1Images = [
+    publicGalleryImages[0],
+    publicGalleryImages[1],
+    publicGalleryImages[2],
+    publicGalleryImages[3],
+    publicGalleryImages[4],
+    publicGalleryImages[5],
+    publicGalleryImages[6],
+    publicGalleryImages[0],
+    publicGalleryImages[1],
+    publicGalleryImages[2],
+  ],
+  row2Images = [
+    publicGalleryImages[3],
+    publicGalleryImages[4],
+    publicGalleryImages[5],
+    publicGalleryImages[6],
+    publicGalleryImages[0],
+    publicGalleryImages[1],
+    publicGalleryImages[2],
+    publicGalleryImages[3],
+    publicGalleryImages[4],
+    publicGalleryImages[5],
+  ],
+  row3Images = [
+    publicGalleryImages[6],
+    publicGalleryImages[5],
+    publicGalleryImages[4],
+    publicGalleryImages[3],
+    publicGalleryImages[2],
+    publicGalleryImages[1],
+    publicGalleryImages[0],
+    publicGalleryImages[6],
+    publicGalleryImages[5],
+    publicGalleryImages[4],
+  ],
+  backgroundColor = "transparent",
+  badgePrefix = "U",
+}: GalleryDiagonalMarqueeProps) {
+  return (
+    <div className="relative flex min-h-screen flex-col justify-center overflow-hidden" style={{ backgroundColor }}>
+      <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-40 mix-blend-multiply" />
+
+      <div className="mb-8 ml-[-10%] w-[120%] -rotate-6">
+        <motion.div
+          animate={{ x: ["0%", "-50%"] }}
+          transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
+          className="flex gap-8"
+        >
+          {[...row1Images, ...row1Images].map((img, i) => (
+            <div key={`r1-${i}`} className="group relative h-64 w-96 shrink-0 overflow-hidden bg-black">
+              <img
+                src={img}
+                alt={`Portrait ${i + 1}`}
+                className="h-full w-full object-cover grayscale transition-all duration-300 group-hover:grayscale-0"
+              />
+              <div className="absolute right-2 top-2 bg-yellow-400 px-2 text-xs font-bold text-black">
+                {badgePrefix}-{i}
+              </div>
+            </div>
+          ))}
+        </motion.div>
+      </div>
+
+      <div className="mb-8 ml-[-10%] w-[120%] rotate-3">
+        <motion.div
+          animate={{ x: ["-50%", "0%"] }}
+          transition={{ duration: 25, repeat: Infinity, ease: "linear" }}
+          className="flex gap-8"
+        >
+          {[...row2Images, ...row2Images].map((img, i) => (
+            <div
+              key={`r2-${i}`}
+              className="group relative h-80 w-80 shrink-0 overflow-hidden rounded-full border-4 border-white bg-black"
+            >
+              <img
+                src={img}
+                alt={`Street ${i + 1}`}
+                className="h-full w-full object-cover transition-transform duration-500 hover:scale-110"
+              />
+            </div>
+          ))}
+        </motion.div>
+      </div>
+
+      <div className="ml-[-10%] w-[120%] -rotate-2">
+        <motion.div
+          animate={{ x: ["0%", "-50%"] }}
+          transition={{ duration: 18, repeat: Infinity, ease: "linear" }}
+          className="flex gap-8"
+        >
+          {[...row3Images, ...row3Images].map((img, i) => (
+            <div key={`r3-${i}`} className="group relative h-64 w-96 shrink-0 overflow-hidden bg-black">
+              <img
+                src={img}
+                alt={`Editorial ${i + 1}`}
+                className="h-full w-full object-cover invert transition-all duration-300 group-hover:invert-0"
+              />
+            </div>
+          ))}
+        </motion.div>
+      </div>
+    </div>
+  );
+}
+
 export default function Home() {
   const [ready, setReady] = useState(false);
   const [progress, setProgress] = useState(0);
   const [infoIndex, setInfoIndex] = useState(0);
   const [contactStep, setContactStep] = useState(1);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [activeImmersionStep, setActiveImmersionStep] = useState(0);
+  const [immersionAutoPlay, setImmersionAutoPlay] = useState(true);
   const { scrollYProgress } = useScroll();
   const heroImageY = useTransform(scrollYProgress, [0, 0.15], [0, 80]);
   const globalParallaxY = useSpring(useTransform(scrollYProgress, [0, 1], [0, -32]), { stiffness: 55, damping: 28 });
@@ -825,16 +1339,24 @@ export default function Home() {
     };
   }, [mobileMenuOpen]);
 
+  useEffect(() => {
+    if (!immersionAutoPlay) return;
+    const immersionTimer = window.setInterval(() => {
+      setActiveImmersionStep((prev) => (prev + 1) % immersionSteps.length);
+    }, 2200);
+    return () => window.clearInterval(immersionTimer);
+  }, [immersionAutoPlay]);
+
   const rotatingInfos = [
     "Collections signature, formats vivants et lecture d'espace affutee.",
     "Du brief au mur: projection, selection des pieces et mise en scene finale.",
     "Matiere, contraste, narration: une presence forte sans bruit inutile.",
     "Direction artistique sur mesure pour lieux prives ou recevant du public.",
   ];
-  const heroHeadlineLines = [["Une", "presence"], ["artistique"], ["forte."]];
+  const heroHeadlineLines = [["MR", "MICROBE,"], ["DU", "DESSIN", "A", "LA", "MATIERE"]];
 
   return (
-    <main className="relative min-h-screen scroll-smooth overflow-x-hidden bg-[#f5f5f5] text-[#0a0a0a] selection:bg-[#0a0a0a] selection:text-white">
+    <main className="relative min-h-screen scroll-smooth overflow-x-hidden bg-[#f5f5f5] pb-0 text-[#0a0a0a] selection:bg-[#0a0a0a] selection:text-white">
       <Preloader done={ready} progress={progress} />
       <CurveBackground />
       <ScrollArrowCursor />
@@ -883,7 +1405,7 @@ export default function Home() {
                           initial={{ opacity: 0, y: 24, filter: "blur(7px)" }}
                           animate={ready ? { opacity: 1, y: 0, filter: "blur(0px)" } : { opacity: 0, y: 24, filter: "blur(7px)" }}
                           transition={{ duration: 0.55, ease: "easeOut", delay: 0.15 + lineIndex * 0.22 + wordIndex * 0.14 }}
-                          className="mr-[0.24em] inline-block"
+                          className={`mr-[0.24em] inline-block ${lineIndex === 0 ? "text-[#e20074]" : ""}`}
                         >
                           {word}
                         </motion.span>
@@ -935,7 +1457,7 @@ export default function Home() {
             <img src={heroImages[0]} alt="Accueil visuel" className="h-[82vh] w-full object-cover transition duration-700" />
             <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(0,0,0,0.18)_0%,rgba(0,0,0,0.38)_78%,rgba(0,0,0,0.6)_100%)]" />
             <div className="absolute inset-0 flex items-center justify-center p-6 text-center md:p-10">
-              <h2 className="max-w-5xl font-serif text-[clamp(2.45rem,8vw,7.2rem)] leading-[0.9] text-white/78 drop-shadow-[0_2px_10px_rgba(0,0,0,0.2)]">
+              <h2 className="max-w-5xl font-serif text-[clamp(2.45rem,8vw,7.2rem)] font-semibold leading-[0.9] text-white/78 drop-shadow-[0_2px_10px_rgba(0,0,0,0.2)]">
                 VISION &amp;
                 <br />
                 MATIERE
@@ -945,39 +1467,23 @@ export default function Home() {
         </section>
 
         <section className="relative bg-transparent px-0 pb-2">
-          <div className="relative grid gap-8 overflow-hidden border-b border-[#0a0a0a]/12 bg-transparent px-6 py-8 md:grid-cols-[1.15fr_0.85fr] md:px-10 md:py-10">
-            <div className="pointer-events-none absolute inset-0 lg:left-[-15rem] lg:w-[calc(100%+15rem)] bg-[linear-gradient(180deg,rgba(0,0,0,0.1)_0%,rgba(0,0,0,0.045)_40%,rgba(0,0,0,0.0)_100%)]" />
-            <div className="pointer-events-none absolute inset-x-0 top-0 h-10 bg-[linear-gradient(180deg,rgba(0,0,0,0.14)_0%,rgba(0,0,0,0)_100%)]" />
-            <div>
-              <p className="text-[10px] uppercase tracking-[0.34em] text-[#0a0a0a]/48">&nbsp;</p>
-              <p className="mt-4 max-w-3xl text-[clamp(2rem,4.7vw,4.25rem)] leading-[1.05] tracking-[-0.03em] text-[#0a0a0a]/84">
-                Visualisez votre espace avant meme la premiere sculpture.
-              </p>
-            </div>
-            <p className="self-center text-right text-[13px] uppercase leading-relaxed tracking-[0.08em] text-[#0a0a0a]/58">
-              “Des rendus d&apos;une precision artistique pour une validation visuelle acceleree.”
-            </p>
-          </div>
-
           <div className="relative h-12 border-b border-[#0a0a0a]/12">
             <span className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-4xl leading-none text-[#0a0a0a]/62">↓</span>
           </div>
 
           <div className="bg-transparent px-6 py-8 md:px-10 md:py-10">
-            <p className="text-[10px] uppercase tracking-[0.3em] text-[#0a0a0a]/46">Expertise &amp; accompagnement</p>
-            <h3 className="mt-3 max-w-6xl text-[clamp(2.5rem,6vw,5.8rem)] font-semibold leading-[0.92] tracking-[-0.04em] text-[#0a0a0a]/94">
-              Specialiste dans la conception
-              <br />
-              de projets artistiques.
+            <h3 className="title-unified mt-3 max-w-6xl font-semibold text-[#0a0a0a]/94">
+              Des oeuvres sur-mesure pensees pour votre espace.
             </h3>
             <div className="mt-7 grid gap-8 md:grid-cols-[1fr_0.9fr]">
               <div>
                 <p className="max-w-2xl text-[clamp(1.05rem,2.2vw,1.55rem)] font-semibold uppercase leading-relaxed text-[#0a0a0a]/88">
-                  Nous accompagnons particuliers et professionnels dans la realisation de leurs projets artistiques:
-                  selection, projection, plans d&apos;implantation et mise en scene finale.
+                  Maxime Furgerot accompagne particuliers, collectionneurs et professionnels dans la creation de pieces
+                  uniques : sculpture, toile, projection dans l&apos;espace, choix du format, implantation et mise en scene
+                  finale.
                 </p>
                 <a
-                  href="#collections"
+                  href="#contact"
                   className="group relative mt-8 inline-flex items-center gap-3 overflow-hidden rounded-full border border-[#0a0a0a]/18 bg-white px-7 py-3 text-[clamp(0.95rem,1.2vw,1.08rem)] font-semibold tracking-[0.06em] text-[#0a0a0a] transition duration-300 hover:-translate-y-0.5 hover:border-[#0a0a0a]/35 hover:shadow-[0_14px_34px_rgba(10,10,10,0.16)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0a0a0a]/45 focus-visible:ring-offset-2"
                 >
                   <span className="pointer-events-none absolute inset-x-3 bottom-1.5 h-[2px] origin-left scale-x-0 bg-[#0a0a0a]/70 transition-transform duration-300 group-hover:scale-x-100" />
@@ -1011,8 +1517,10 @@ export default function Home() {
 
           <div className="relative mx-auto mt-16 max-w-6xl px-3 py-4 md:px-6 md:py-6">
             <div className="pointer-events-none absolute inset-0 opacity-16 [background-image:linear-gradient(to_right,rgba(0,0,0,0.04)_1px,transparent_1px),linear-gradient(to_bottom,rgba(0,0,0,0.03)_1px,transparent_1px)] [background-size:54px_54px]" />
-            <h3 className="mt-1 text-[clamp(3.2rem,8.5vw,8.8rem)] font-semibold uppercase leading-[0.88] tracking-[-0.05em] text-[#0a0a0a]/96">
-              COLLECTIONS <span className="text-[#e20074]">MR MICROBE</span>
+            <h3 className="title-unified mt-1 font-semibold uppercase text-[#0a0a0a]/96">
+              COLLECTIONS
+              <br />
+              <span className="text-[#e20074]">MR MICROBE</span>
             </h3>
 
             <div className="mt-12 border-t border-[#0a0a0a]/10">
@@ -1032,13 +1540,9 @@ export default function Home() {
                   viewport={{ once: true, amount: 0.35 }}
                   transition={{ duration: 0.5, delay: index * 0.05 }}
                   whileHover={{ x: 6 }}
-                  className="group relative grid items-center gap-7 border-b border-[#0a0a0a]/10 px-4 py-10 transition-colors duration-300 hover:bg-[linear-gradient(118deg,rgba(226,0,116,0.94)_0%,rgba(196,0,98,0.9)_48%,rgba(120,0,60,0.9)_100%)] md:min-h-[182px] md:grid-cols-[88px_1.35fr_1fr] md:gap-12 md:px-10 md:py-12"
+                  className="group relative grid items-center gap-7 border-b border-[#0a0a0a]/10 px-4 py-10 transition-colors duration-300 hover:bg-[linear-gradient(118deg,rgba(226,0,116,0.94)_0%,rgba(196,0,98,0.9)_48%,rgba(120,0,60,0.9)_100%)] md:min-h-[182px] md:grid-cols-[1.35fr_1fr] md:gap-12 md:px-10 md:py-12"
                 >
                   <span className="pointer-events-none absolute inset-0 bg-[linear-gradient(120deg,transparent_0%,transparent_38%,rgba(255,255,255,0.11)_52%,transparent_66%,transparent_100%)] opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
-                  <div className="flex flex-col text-[#0a0a0a]/34 transition-colors duration-300 group-hover:text-white/70">
-                    <span className="text-[clamp(1rem,1.4vw,1.3rem)] font-semibold tracking-[0.08em]">{String(index + 1).padStart(2, "0")}</span>
-                    <span className="mt-1 text-xl leading-none">-</span>
-                  </div>
                   <p className="text-[clamp(1.7rem,3.8vw,4.05rem)] font-semibold uppercase leading-[0.9] tracking-[-0.03em] text-[#0a0a0a]/94 transition duration-300 group-hover:translate-x-1 group-hover:text-white/96">
                     {item.title}
                   </p>
@@ -1056,33 +1560,19 @@ export default function Home() {
             <div className="mt-20 border-t border-[#0a0a0a]/10 pt-12">
               <div className="relative border-b border-[#0a0a0a]/10 pb-7">
                 <div className="flex items-end justify-between gap-4">
-                  <p className="text-[clamp(3.1rem,7.9vw,8rem)] font-semibold uppercase leading-[0.88] tracking-[-0.045em] text-[#0a0a0a]/96">
-                    Realisations
+                  <p className="title-unified font-semibold uppercase text-[#0a0a0a]/96">
+                    REALISATION<span className="text-[#e20074]">S</span>
                   </p>
                 </div>
-                <span className="pointer-events-none absolute left-1/2 top-[62%] -translate-x-1/2 text-[clamp(2rem,2.8vw,2.8rem)] leading-none text-[#0a0a0a]/52">
-                  ↓
-                </span>
               </div>
 
-              <div className="relative left-1/2 mt-6 w-screen -translate-x-1/2 space-y-4 lg:-ml-[7.5rem]">
-                {["/images/M7_01625.jpg", "/images/M7_03110.jpg", "/images/M7_03103.jpg", "/images/M7_01636.jpg"].map((src, index) => (
-                  <motion.article
-                    key={`${src}-${index}`}
-                    initial={{ opacity: 0, y: 20 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true, amount: 0.25 }}
-                    transition={{ duration: 0.5, delay: index * 0.05 }}
-                    className="group w-full overflow-hidden"
-                  >
-                    <img
-                      src={src}
-                      alt={`Echantillon collection ${index + 1}`}
-                      className="h-[78vh] w-full object-cover transition duration-700 group-hover:scale-[1.01]"
-                    />
-                  </motion.article>
-                ))}
+              <div className="relative left-1/2 mt-6 w-screen -translate-x-1/2 lg:-ml-[7.5rem]">
+                <RealisationScrollStack />
               </div>
+            </div>
+
+            <div className="relative left-1/2 mt-8 w-screen -translate-x-1/2 lg:-ml-[7.5rem]">
+              <GalleryFilmStrip />
             </div>
           </div>
         </section>
@@ -1090,11 +1580,11 @@ export default function Home() {
         <section id="artiste" className="bg-transparent px-0 py-10">
           <div className="relative px-6 pb-6 md:px-10">
             <div className="pointer-events-none absolute inset-0 opacity-20 [background-image:linear-gradient(to_right,rgba(0,0,0,0.045)_1px,transparent_1px),linear-gradient(to_bottom,rgba(0,0,0,0.035)_1px,transparent_1px)] [background-size:56px_56px]" />
-            <h3 className="relative mt-2 text-[clamp(3.2rem,8.4vw,8.5rem)] font-semibold uppercase leading-[0.88] tracking-[-0.05em] text-[#0a0a0a]/95">
-              Artiste
+            <h3 className="title-unified relative mt-2 font-semibold uppercase text-[#0a0a0a]/95">
+              Portrait
             </h3>
-            <p className="relative -mt-1 text-[clamp(2.9rem,7.6vw,7.6rem)] font-semibold uppercase leading-[0.86] tracking-[-0.04em] text-[#0a0a0a]/16">
-              Signature vivante
+            <p className="title-unified relative -mt-1 font-semibold uppercase text-[#e20074]">
+              MR MICROBE
             </p>
           </div>
 
@@ -1107,9 +1597,9 @@ export default function Home() {
               className="group relative min-h-[78vh] overflow-hidden"
             >
               <img
-                src="/images/M7_02148.jpg"
+                src={heroImages[2]}
                 alt="Maxime Furgerot - portrait urbain"
-                className="h-[82vh] w-full object-cover object-top transition duration-700 group-hover:scale-[1.02]"
+                className="h-[82vh] w-full object-cover object-[center_35%] transition duration-700 group-hover:scale-[1.02]"
               />
             </motion.div>
 
@@ -1131,11 +1621,7 @@ export default function Home() {
               />
 
               <div className="relative border-b border-white/14 pb-6">
-                <div className="flex items-center gap-4">
-                  <span className="h-px w-20 bg-white/20" />
-                  <p className="font-sans text-[11px] font-extrabold uppercase tracking-[0.16em] text-white/34">PROJECT DETAILS 03</p>
-                </div>
-                <div className="mt-5 space-y-0 text-[clamp(0.86rem,0.95vw,0.98rem)] font-bold uppercase tracking-[0.06em]">
+                <div className="space-y-0 text-[clamp(0.86rem,0.95vw,0.98rem)] font-bold uppercase tracking-[0.06em]">
                   <div className="grid grid-cols-[1fr_auto] border-t border-white/14 py-3.5">
                     <span className="font-sans text-white/52">Nom</span>
                     <span className="font-sans text-white/94">Maxime Furgerot</span>
@@ -1163,9 +1649,9 @@ export default function Home() {
 
               <div className="relative mt-12 overflow-hidden border border-white/14">
                 <img
-                  src={heroImages[2]}
+                  src="/images/M7_02148.jpg"
                   alt="Univers artistique"
-                  className="h-[38vh] w-full object-cover transition duration-700"
+                  className="h-[38vh] w-full object-cover object-[center_10%] transition duration-700"
                 />
                 <span className="pointer-events-none absolute bottom-6 right-6 text-[clamp(2rem,2.4vw,2.6rem)] leading-none text-white/66">↓</span>
               </div>
@@ -1173,58 +1659,26 @@ export default function Home() {
           </div>
         </section>
 
-        <section className="relative overflow-hidden border-y border-white/12 bg-[#03060c] px-0 py-14 text-white md:py-16 lg:relative lg:left-[-15rem] lg:w-[calc(100%+15rem)]">
-          <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(180deg,rgba(5,9,16,0.99)_0%,rgba(2,4,8,1)_100%)]" />
-          <div className="pointer-events-none absolute inset-0 opacity-10 [background-image:linear-gradient(to_right,rgba(255,255,255,0.055)_1px,transparent_1px),linear-gradient(to_bottom,rgba(255,255,255,0.04)_1px,transparent_1px)] [background-size:48px_48px]" />
-          <div className="pointer-events-none absolute left-[-8%] top-[-18%] h-80 w-[58%] bg-[radial-gradient(circle_at_35%_40%,rgba(255,255,255,0.16)_0%,rgba(255,255,255,0)_68%)] blur-[22px]" />
-          <div className="pointer-events-none absolute inset-y-0 right-0 w-[40%] bg-[linear-gradient(90deg,rgba(255,255,255,0)_0%,rgba(173,181,194,0.12)_52%,rgba(173,181,194,0.2)_100%)]" />
-          <div className="pointer-events-none absolute right-[-11%] top-0 h-full w-[36%] bg-[linear-gradient(72deg,rgba(255,255,255,0)_0%,rgba(255,255,255,0.06)_62%,rgba(255,255,255,0.12)_100%)]" />
-          <div className="pointer-events-none absolute right-[10%] top-[28%] h-52 w-52 rounded-full bg-white/10 blur-[90px]" />
-          <div className="pointer-events-none absolute right-[18%] top-[2%] h-56 w-8 rotate-[18deg] rounded-full bg-[linear-gradient(180deg,rgba(225,230,238,0.44)_0%,rgba(225,230,238,0.16)_55%,rgba(225,230,238,0)_100%)] blur-[10px]" />
-          <div className="pointer-events-none absolute right-[2%] bottom-[-28%] h-[84%] w-[54%] rounded-[48%] bg-[radial-gradient(ellipse_at_18%_34%,rgba(218,224,236,0.24)_0%,rgba(218,224,236,0.12)_36%,rgba(218,224,236,0)_74%)] blur-[18px]" />
-
-          <div className="relative mx-auto max-w-[1320px] px-6 md:px-10">
-            <h3 className="mt-1 text-center text-[clamp(3.6rem,9.6vw,8.8rem)] font-black uppercase leading-[0.84] tracking-[-0.05em] text-white">
-              Parcours
-            </h3>
-
-            <div className="relative mx-auto mt-16 grid max-w-[1180px] gap-x-20 gap-y-20 pb-4 lg:grid-cols-2">
-                {[
-                  { title: "Origines visuelles", text: "Dessins instinctifs, contrastes bruts, naissance du regard.", num: "1", year: "2004" },
-                  { title: "Matiere et precision", text: "Apprentissage du geste, des reliefs, des patines et de la discipline.", num: "2", year: "2021" },
-                  { title: "Signature Mr Microbe", text: "Mr Microbe devient une signature directe, organique et frontale.", num: "3", year: "2019" },
-                  { title: "Direction vivante", text: "Collections privees, parcours immersifs, direction artistique sur mesure.", num: "4", year: "2024" },
-                ].map((step) => (
-                <motion.article
-                  key={step.num}
-                  initial={{ opacity: 0, y: 14 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true, amount: 0.3 }}
-                  transition={{ duration: 0.45 }}
-                  className="relative pl-14 text-left md:pl-16"
-                >
-                  <span className="pointer-events-none absolute left-0 top-[-0.9rem] text-[clamp(4.4rem,7vw,6.2rem)] font-black leading-none tracking-[-0.05em] text-white/14">
-                    {step.num}
-                  </span>
-                  <p className="relative font-sans text-[clamp(1.75rem,2.9vw,2.8rem)] font-black uppercase leading-[0.94] tracking-[-0.03em] text-white">
-                    {step.title}
-                  </p>
-                  <p className="relative mt-3 max-w-[46ch] font-sans text-[clamp(0.9rem,1vw,0.98rem)] font-semibold uppercase leading-[1.45] tracking-[0.1em] text-white/43">
-                    {step.text}
-                  </p>
-                  <p className="relative mt-2 text-[10px] font-bold uppercase tracking-[0.2em] text-white/48">{step.year}</p>
-                </motion.article>
-              ))}
-            </div>
-          </div>
-        </section>
+        <ParcoursFlipExperience />
 
         <section id="immersion" className="bg-transparent px-6 py-16 md:px-10 md:py-20">
-          <div className="relative overflow-visible border-y border-[#0a0a0a]/10 bg-transparent px-6 py-8 md:px-10 md:py-10">
+          <div className="relative overflow-visible border-y border-[#0a0a0a]/10 bg-[linear-gradient(135deg,rgba(255,255,255,0.72)_0%,rgba(245,245,245,0.9)_35%,rgba(243,234,240,0.85)_100%)] px-6 py-8 md:px-10 md:py-10">
             <div className="pointer-events-none absolute inset-0 opacity-24 [background-image:linear-gradient(to_right,rgba(0,0,0,0.045)_1px,transparent_1px),linear-gradient(to_bottom,rgba(0,0,0,0.035)_1px,transparent_1px)] [background-size:48px_48px]" />
             <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_78%_6%,rgba(255,255,255,0.32)_0%,rgba(255,255,255,0)_48%)]" />
             <div className="pointer-events-none absolute -left-16 top-10 h-44 w-44 rounded-full bg-[#0a0a0a]/10 blur-3xl" />
             <div className="pointer-events-none absolute right-[-6%] top-[22%] h-56 w-56 rounded-full bg-white/55 blur-3xl" />
+            <motion.div
+              aria-hidden
+              animate={{ x: ["-10%", "12%", "-10%"], y: ["0%", "-5%", "0%"] }}
+              transition={{ duration: 11, repeat: Infinity, ease: "easeInOut" }}
+              className="pointer-events-none absolute -right-16 top-24 h-64 w-64 rounded-full bg-[#e20074]/16 blur-3xl"
+            />
+            <motion.div
+              aria-hidden
+              animate={{ x: ["6%", "-12%", "6%"], y: ["0%", "7%", "0%"] }}
+              transition={{ duration: 12.5, repeat: Infinity, ease: "easeInOut" }}
+              className="pointer-events-none absolute -left-20 bottom-10 h-56 w-56 rounded-full bg-[#0a0a0a]/12 blur-3xl"
+            />
             <motion.div
               aria-hidden
               animate={{ x: ["-120%", "130%"], opacity: [0.3, 0.7, 0.3] }}
@@ -1235,26 +1689,20 @@ export default function Home() {
 
             <div className="relative grid items-start gap-6 border-b border-[#0a0a0a]/10 pb-6 md:grid-cols-[1.2fr_0.8fr]">
               <div>
-                <p className="mt-3 max-w-3xl text-[clamp(2rem,4.9vw,4.8rem)] font-semibold uppercase leading-[0.95] tracking-[-0.04em] text-[#0a0a0a]/92">
+                <p className="title-unified mt-3 max-w-3xl font-semibold uppercase text-[#0a0a0a]/92">
                   Immersion
                 </p>
                 <p className="mt-4 max-w-2xl text-[clamp(1.1rem,2vw,1.65rem)] leading-relaxed text-[#0a0a0a]/72">
-                  Methode dynamique de projection et d&apos;installation.
-                  <br />
-                  Lecture immediate du projet.
+                  Une approche sur-mesure pour imaginer l&apos;oeuvre dans son environnement final.
                 </p>
               </div>
               <p className="self-center text-right text-[13px] font-semibold uppercase leading-relaxed tracking-[0.08em] text-[#0a0a0a]/56" />
             </div>
-
-            <p className="relative mx-auto mt-8 max-w-6xl text-center font-serif text-[clamp(2.1rem,5.8vw,6rem)] leading-[1.08] tracking-[-0.02em] text-[#0a0a0a]/86">
-              “Lecture du lieu, curation, projection et installation: une immersion claire, precise et coherente.”
-            </p>
             <div className="group relative left-1/2 mt-10 w-screen -translate-x-1/2 overflow-hidden lg:-ml-[15rem] lg:w-[calc(100vw+15rem)]">
               <img
-                src="/images/M7_01373.jpg"
+                src="/images/Image 5.png"
                 alt="Immersion claire precise coherente"
-                className="h-[46vh] min-h-[320px] w-full object-cover transition duration-700 md:h-[68vh]"
+                className="h-[58vh] min-h-[420px] w-full object-cover object-center transition duration-700 md:h-[78vh]"
               />
               <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(118deg,rgba(0,0,0,0.34)_0%,rgba(0,0,0,0.14)_36%,rgba(255,255,255,0.08)_58%,rgba(0,0,0,0.24)_100%)]" />
               <motion.div
@@ -1268,26 +1716,6 @@ export default function Home() {
             </div>
 
             <div className="relative mt-12 border-t border-[#0a0a0a]/10 pt-8 md:mt-14 md:pt-10">
-              <motion.span
-                aria-hidden
-                initial={{ opacity: 0, x: 20 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                viewport={{ once: true, amount: 0.5 }}
-                transition={{ duration: 0.6 }}
-                className="pointer-events-none absolute right-0 top-1 text-[clamp(2.2rem,8vw,7.2rem)] font-black uppercase leading-none tracking-[-0.05em] text-[#0a0a0a]/10"
-              >
-                4 etapes
-              </motion.span>
-              <p className="relative text-[10px] font-black uppercase tracking-[0.3em] text-[#0a0a0a]/48">Immersion process</p>
-              <motion.h4
-                initial={{ opacity: 0, y: 12 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, amount: 0.5 }}
-                transition={{ duration: 0.45 }}
-                className="relative mt-2 text-[clamp(1.65rem,3.7vw,3.55rem)] font-semibold uppercase leading-[0.9] tracking-[-0.04em] text-[#0a0a0a]/92"
-              >
-                4 etapes
-              </motion.h4>
               <motion.div
                 aria-hidden
                 initial={{ scaleX: 0 }}
@@ -1300,76 +1728,150 @@ export default function Home() {
                 Une lecture vivante du lieu en quatre mouvements.
               </p>
 
-              <div className="relative mt-8 grid gap-6 md:gap-7">
-                {immersionSteps.map((step, index) => (
-                  <motion.article
-                    key={step.id}
-                    initial={{ opacity: 0, y: 20 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true, amount: 0.28 }}
-                    transition={{ duration: 0.45, delay: index * 0.06 }}
-                    whileHover={{ x: 6, rotate: 0.15 }}
-                    className="group relative overflow-hidden rounded-sm border border-[#0a0a0a]/10 bg-white/25 p-4 backdrop-blur-[1px] transition-colors duration-300 hover:bg-[#0a0a0a] md:p-5"
-                  >
-                    <span className="pointer-events-none absolute inset-0 bg-[linear-gradient(116deg,transparent_0%,transparent_38%,rgba(255,255,255,0.1)_52%,transparent_66%,transparent_100%)] opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
-                    <div className="grid items-start gap-4 md:grid-cols-[54px_1fr] md:gap-6">
-                      <span className="pt-1 text-[clamp(0.74rem,0.88vw,0.9rem)] font-semibold uppercase tracking-[0.14em] text-[#0a0a0a]/42 transition-colors duration-300 group-hover:text-white/62">
-                        {step.id}
-                      </span>
-                      <div className="border-l border-[#0a0a0a]/10 pl-5 transition-colors duration-300 group-hover:border-white/18 md:pl-6">
-                        <p className="font-serif text-[clamp(1.85rem,3.2vw,3rem)] leading-[0.92] tracking-[-0.02em] text-[#0a0a0a]/95 transition duration-300 group-hover:translate-x-1 group-hover:text-white">
-                          {step.title}
-                        </p>
-                        <p className="mt-2 max-w-[58ch] font-mono text-[clamp(0.94rem,1.1vw,1.15rem)] leading-[1.5] text-[#0a0a0a]/66 transition-colors duration-300 group-hover:text-white/72">
-                          {step.text}
-                        </p>
+              <div className="relative mt-8 grid gap-8 lg:grid-cols-[1.08fr_0.92fr] lg:gap-10">
+                <motion.p
+                  aria-hidden
+                  initial={{ opacity: 0, x: 30 }}
+                  whileInView={{ opacity: 1, x: 0 }}
+                  viewport={{ once: true, amount: 0.3 }}
+                  transition={{ duration: 0.6 }}
+                  className="pointer-events-none absolute -right-1 top-[-2.1rem] z-[1] text-[clamp(2.8rem,7vw,6rem)] font-black uppercase leading-none tracking-[-0.05em] text-[#0a0a0a]/10"
+                >
+                  immersion
+                </motion.p>
+                <div className="relative space-y-4 pl-6 md:pl-10">
+                  <div className="pointer-events-none absolute left-2 top-4 h-[92%] w-px bg-[linear-gradient(180deg,rgba(10,10,10,0.14)_0%,rgba(226,0,116,0.42)_48%,rgba(10,10,10,0.14)_100%)] md:left-4" />
+                  {immersionSteps.map((step, index) => (
+                    <motion.button
+                      key={step.id}
+                      type="button"
+                      initial={{ opacity: 0, y: 14 }}
+                      whileInView={{ opacity: 1, y: 0 }}
+                      viewport={{ once: true, amount: 0.2 }}
+                      transition={{ duration: 0.35, delay: index * 0.04 }}
+                      onMouseEnter={() => {
+                        setImmersionAutoPlay(false);
+                        setActiveImmersionStep(index);
+                      }}
+                      onFocus={() => {
+                        setImmersionAutoPlay(false);
+                        setActiveImmersionStep(index);
+                      }}
+                      onClick={() => {
+                        setImmersionAutoPlay(false);
+                        setActiveImmersionStep(index);
+                      }}
+                      className={`group relative block w-full overflow-hidden rounded-2xl border px-5 py-5 text-left transition-all duration-300 md:px-6 md:py-6 ${
+                        activeImmersionStep === index
+                          ? "border-[#e20074]/45 bg-[linear-gradient(132deg,#ff0f93_0%,#d5006d_42%,#7a003f_100%)] text-white shadow-[0_24px_52px_rgba(226,0,116,0.4)]"
+                          : "border-[#0a0a0a]/10 bg-white/55 text-[#0a0a0a] hover:-translate-y-[2px] hover:bg-white/80 hover:shadow-[0_12px_26px_rgba(10,10,10,0.12)]"
+                      }`}
+                      style={{ marginLeft: `${index * 10}px`, transform: `rotate(${index % 2 === 0 ? -0.25 : 0.2}deg)` }}
+                    >
+                      <span
+                        className={`pointer-events-none absolute -left-[1.35rem] top-1/2 h-2.5 w-2.5 -translate-y-1/2 rounded-full ring-4 ${
+                          activeImmersionStep === index ? "bg-[#ff7ec7] ring-[#ff7ec7]/22" : "bg-[#0a0a0a]/35 ring-[#0a0a0a]/12"
+                        }`}
+                      />
+                      <span className="pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-300 group-hover:opacity-100 bg-[linear-gradient(112deg,transparent_0%,transparent_35%,rgba(255,255,255,0.14)_52%,transparent_66%,transparent_100%)]" />
+                      <span
+                        className={`pointer-events-none absolute right-5 top-4 h-8 w-8 rounded-md border border-white/25 transition-opacity duration-300 ${
+                          activeImmersionStep === index ? "opacity-100" : "opacity-0"
+                        }`}
+                      />
+                      <span
+                        className={`pointer-events-none absolute bottom-0 left-0 h-1 bg-[linear-gradient(90deg,#ff2fa3_0%,#ff7ec7_55%,#ffd0ea_100%)] transition-all duration-300 ${
+                          activeImmersionStep === index ? "w-full opacity-100" : "w-0 opacity-0"
+                        }`}
+                      />
+                      <div className="grid items-start gap-4 md:grid-cols-[48px_1fr] md:gap-5">
+                        <span
+                          className={`pt-1 text-[0.78rem] font-semibold uppercase tracking-[0.14em] ${
+                            activeImmersionStep === index ? "text-white/55" : "text-[#0a0a0a]/40"
+                          }`}
+                        >
+                          {step.id}
+                        </span>
+                        <div className={`border-l pl-5 md:pl-6 ${activeImmersionStep === index ? "border-white/26" : "border-[#0a0a0a]/12"}`}>
+                          <p
+                            className={`font-display text-[clamp(1.55rem,3vw,2.85rem)] font-black leading-[0.9] tracking-[-0.03em] ${
+                              activeImmersionStep === index ? "text-white" : "text-[#0a0a0a]/94"
+                            }`}
+                          >
+                            {step.title}
+                          </p>
+                          <p
+                            className={`mt-2 font-mono text-[clamp(0.88rem,1vw,1.02rem)] leading-[1.45] ${
+                              activeImmersionStep === index ? "text-white/72" : "text-[#0a0a0a]/62"
+                            }`}
+                          >
+                            {step.text}
+                          </p>
+                        </div>
                       </div>
+                    </motion.button>
+                  ))}
+                </div>
+
+                <motion.div
+                  key={`immersion-panel-${activeImmersionStep}`}
+                  initial={{ opacity: 0, y: 18, scale: 0.98 }}
+                  animate={{ opacity: 1, y: 0, scale: 1 }}
+                  transition={{ duration: 0.35, ease: "easeOut" }}
+                  className="relative isolate overflow-hidden rounded-[1.55rem] border border-[#0a0a0a]/18 bg-[#0a0a0a] text-white shadow-[0_34px_70px_rgba(0,0,0,0.38)]"
+                >
+                  <div className="pointer-events-none absolute -inset-8 -z-10 bg-[radial-gradient(circle_at_85%_18%,rgba(226,0,116,0.45)_0%,rgba(226,0,116,0)_52%)] blur-2xl" />
+                  <motion.img
+                    src={["/images/Image 8.png", "/images/Image 1.png", "/images/Image 9.png", "/images/Image 11.png"][activeImmersionStep]}
+                    alt={immersionSteps[activeImmersionStep].title}
+                    className="h-[390px] w-full object-cover object-center md:h-[500px]"
+                    initial={{ scale: 1.08, filter: "blur(4px)" }}
+                    animate={{ scale: 1, filter: "blur(0px)" }}
+                    transition={{ duration: 0.55, ease: "easeOut" }}
+                  />
+                  <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(180deg,rgba(0,0,0,0.08)_0%,rgba(0,0,0,0.82)_100%)]" />
+                  <motion.div
+                    aria-hidden
+                    animate={{ x: ["-120%", "130%"] }}
+                    transition={{ duration: 5.5, repeat: Infinity, ease: "linear" }}
+                    className="pointer-events-none absolute inset-y-0 w-16 bg-[linear-gradient(90deg,rgba(255,255,255,0)_0%,rgba(255,255,255,0.23)_52%,rgba(255,255,255,0)_100%)] blur-sm"
+                  />
+                  <div className="pointer-events-none absolute left-6 top-6 h-10 w-10 rounded-tl-xl border-l border-t border-white/45" />
+                  <div className="pointer-events-none absolute bottom-6 right-6 h-10 w-10 rounded-br-xl border-b border-r border-white/45" />
+                  <div className="absolute bottom-0 left-0 right-0 p-5 md:p-6">
+                    <p className="text-[10px] font-mono uppercase tracking-[0.22em] text-white/58">
+                      Step {immersionSteps[activeImmersionStep].id} / 04
+                    </p>
+                    <p className="mt-2 text-[clamp(1.95rem,3.2vw,3rem)] font-black uppercase leading-[0.88] tracking-[-0.03em] text-white">
+                      {immersionSteps[activeImmersionStep].title}
+                    </p>
+                    <div className="mt-3 flex items-center gap-2">
+                      <span className="rounded-full border border-white/30 bg-white/14 px-2.5 py-1 text-[10px] font-mono uppercase tracking-[0.14em] text-white/75">
+                        Atelier
+                      </span>
+                      <span className="rounded-full border border-white/30 bg-white/14 px-2.5 py-1 text-[10px] font-mono uppercase tracking-[0.14em] text-white/75">
+                        Direction
+                      </span>
                     </div>
-                  </motion.article>
-                ))}
+                    <div className="mt-3 h-1.5 w-full overflow-hidden rounded-full bg-white/16 ring-1 ring-white/15">
+                      <motion.div
+                        className="h-full rounded-full bg-[linear-gradient(90deg,#ff2fa3_0%,#ff7ec7_55%,#ffd0ea_100%)] shadow-[0_0_14px_rgba(255,71,170,0.55)]"
+                        initial={{ width: "0%" }}
+                        animate={{ width: `${(activeImmersionStep + 1) * 25}%` }}
+                        transition={{ duration: 0.35, ease: "easeOut" }}
+                      />
+                    </div>
+                  </div>
+                </motion.div>
               </div>
             </div>
 
             <div className="group relative left-1/2 mt-12 w-screen -translate-x-1/2 overflow-hidden lg:-ml-[15rem] lg:w-[calc(100vw+15rem)]">
               <img
-                src="/images/M7_01387.jpg"
+                src="/images/Image 5.png"
                 alt="Immersion detail"
-                className="h-[62vh] min-h-[420px] w-full object-cover transition duration-700 md:h-[82vh]"
+                className="h-[72vh] min-h-[520px] w-full object-cover object-center transition duration-700 md:h-[92vh]"
               />
-            </div>
-          </div>
-        </section>
-
-        <section className="bg-transparent px-6 py-14 md:px-10 md:py-16">
-          <div className="mx-auto max-w-[1120px]">
-            <div className="relative mb-8 md:mb-10">
-              <p className="text-[10px] font-black uppercase tracking-[0.34em] text-[#0a0a0a]/46">FAQ immersion</p>
-              <h3 className="mt-2 text-[clamp(2.5rem,6.3vw,6.2rem)] font-semibold uppercase leading-[0.88] tracking-[-0.05em] text-[#0a0a0a]/92">
-                Questions
-              </h3>
-              <p className="-mt-1 text-[clamp(2.3rem,6vw,5.7rem)] font-semibold uppercase leading-[0.86] tracking-[-0.04em] text-[#0a0a0a]/14">
-                Reponses claires
-              </p>
-            </div>
-            <div className="grid border-t border-[#0a0a0a]/12 md:grid-cols-2">
-              {immersionFaq.slice(0, 3).map((item, index) => (
-                <motion.article
-                  key={item.q}
-                  initial={{ opacity: 0, y: 16 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true, amount: 0.3 }}
-                  transition={{ duration: 0.42, delay: index * 0.06 }}
-                  className={`px-4 py-8 text-center md:px-8 md:py-10 ${
-                    index % 2 === 0 ? "md:border-r md:border-[#0a0a0a]/12" : ""
-                  } ${index > 1 ? "border-t border-[#0a0a0a]/12 md:col-span-2 md:border-r-0 md:mx-auto md:w-full md:max-w-[620px]" : ""}`}
-                >
-                  <span className="block text-[clamp(1rem,1.5vw,1.4rem)] font-black text-[#0a0a0a]/22">
-                    ({String(index + 1).padStart(2, "0")})
-                  </span>
-                  <p className="mt-2 font-serif text-[clamp(1.7rem,2.5vw,2.6rem)] leading-[1.1] text-[#0a0a0a]/78">{item.q}</p>
-                  <p className="mx-auto mt-3 max-w-[42ch] text-[clamp(0.98rem,1.05vw,1.15rem)] leading-[1.62] text-[#0a0a0a]/58">{item.a}</p>
-                </motion.article>
-              ))}
             </div>
           </div>
         </section>
@@ -1419,8 +1921,8 @@ export default function Home() {
               transition={{ duration: 0.45, delay: 0.06 }}
               className="border border-[#0a0a0a]/10 bg-white/35 p-8 backdrop-blur-[1px] md:p-12"
             >
-              <h4 className="font-serif text-[clamp(2.5rem,5vw,4.1rem)] leading-[0.95] tracking-[-0.03em] text-[#0a0a0a]/92">
-                Parlez-nous de votre projet
+              <h4 className="font-display text-[clamp(2.5rem,5vw,4.1rem)] font-black leading-[0.95] tracking-[-0.03em] text-[#0a0a0a]/92">
+                Discutons de votre projet
               </h4>
               <p className="mt-3 text-[clamp(1rem,1.2vw,1.35rem)] text-[#0a0a0a]/62">
                 Formulaire complet pour cadrer precisement votre demande.
@@ -1589,6 +2091,32 @@ export default function Home() {
             </motion.div>
           </div>
         </section>
+
+        <section id="gallery" className="border-t border-[#0a0a0a]/10">
+          <GalleryDiagonalMarquee />
+        </section>
+
+        <footer className="mb-0 border-t border-[#0a0a0a]/10 bg-white px-6 pb-0 pt-3 md:px-10 md:pt-3">
+          <div className="mx-auto flex w-full max-w-[1280px] justify-end">
+            <nav className="flex min-h-[34px] items-center gap-4 pb-0 text-[11px] text-[#0a0a0a]/55 md:text-[12px]">
+              <a href="/faq" className="transition-colors hover:text-[#0a0a0a]/82">
+                FAQ
+              </a>
+              <span className="text-[#0a0a0a]/35">|</span>
+              <a href="#" className="transition-colors hover:text-[#0a0a0a]/82">
+                Mentions legales
+              </a>
+              <span className="text-[#0a0a0a]/35">|</span>
+              <a href="#" className="transition-colors hover:text-[#0a0a0a]/82">
+                Politique de confidentialite
+              </a>
+              <span className="text-[#0a0a0a]/35">|</span>
+              <a href="#" className="transition-colors hover:text-[#0a0a0a]/82">
+                Cookies
+              </a>
+            </nav>
+          </div>
+        </footer>
 
       </motion.div>
     </main>
