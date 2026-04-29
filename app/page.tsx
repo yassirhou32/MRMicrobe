@@ -557,7 +557,12 @@ function UiloraDragonScroll({
   return (
     <div ref={containerRef} className="overflow-x-hidden bg-transparent font-serif text-[#141414]">
       {items.map((item, idx) => (
-        <section key={idx} className="uilora-work-item relative h-[150vh] w-full overflow-hidden">
+        <section
+          key={idx}
+          className={`uilora-work-item relative w-full overflow-hidden md:h-[150vh] ${
+            idx === 3 ? "h-[72vh]" : "h-[82vh]"
+          }`}
+        >
           <div className="uilora-img-wrapper absolute inset-0 h-full w-full will-change-[clip-path]">
             <img
               src={item.image}
@@ -1449,7 +1454,8 @@ export default function Home() {
 
         <section id="accueil" className="border-t border-[#0a0a0a]/10 bg-transparent px-0 pb-0 pt-4">
           <div className="group relative min-h-[82vh] overflow-hidden border-y border-[#0a0a0a]/10 lg:relative lg:left-[-15rem] lg:w-[calc(100%+15rem)]">
-            <img src={heroImages[0]} alt="Accueil visuel" className="h-[82vh] w-full object-cover transition duration-700" />
+            <img src="/images/Image 111.png" alt="Accueil visuel" className="h-[82vh] w-full object-cover transition duration-700 md:hidden" />
+            <img src={heroImages[0]} alt="Accueil visuel" className="hidden h-[82vh] w-full object-cover transition duration-700 md:block" />
             <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(0,0,0,0.18)_0%,rgba(0,0,0,0.38)_78%,rgba(0,0,0,0.6)_100%)]" />
             <div className="absolute inset-0 flex items-center justify-center p-6 text-center md:p-10">
               <h2 className="max-w-5xl font-serif text-[clamp(2.45rem,8vw,7.2rem)] font-semibold leading-[0.9] text-white/78 drop-shadow-[0_2px_10px_rgba(0,0,0,0.2)]">
@@ -1505,7 +1511,16 @@ export default function Home() {
                 transition={{ duration: 0.55, delay: index * 0.06 }}
                 className="group overflow-hidden border border-[#0a0a0a]/10 bg-[#0a0a0a]"
               >
-                <img src={src} alt={`Gallery ${index + 1}`} className="h-[72vh] w-full object-cover transition duration-700 group-hover:scale-[1.02]" />
+                <img
+                  src="/images/Image 2 2.png"
+                  alt={`Gallery ${index + 1}`}
+                  className="h-[72vh] w-full object-cover transition duration-700 group-hover:scale-[1.02] md:hidden"
+                />
+                <img
+                  src={src}
+                  alt={`Gallery ${index + 1}`}
+                  className="hidden h-[88vh] w-full object-cover transition duration-700 group-hover:scale-[1.02] md:block"
+                />
               </motion.article>
             ))}
           </div>
@@ -1695,9 +1710,14 @@ export default function Home() {
             </div>
             <div className="group relative left-1/2 mt-10 w-screen -translate-x-1/2 overflow-hidden lg:-ml-[15rem] lg:w-[calc(100vw+15rem)]">
               <img
+                src="/images/Image 55.png"
+                alt="Immersion claire precise coherente"
+                className="h-[58vh] min-h-[420px] w-full object-cover object-center transition duration-700 md:hidden"
+              />
+              <img
                 src="/images/Image 5.png"
                 alt="Immersion claire precise coherente"
-                className="h-[58vh] min-h-[420px] w-full object-cover object-center transition duration-700 md:h-[78vh]"
+                className="hidden h-[78vh] w-full object-cover object-center transition duration-700 md:block"
               />
               <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(118deg,rgba(0,0,0,0.34)_0%,rgba(0,0,0,0.14)_36%,rgba(255,255,255,0.08)_58%,rgba(0,0,0,0.24)_100%)]" />
               <motion.div
