@@ -1517,7 +1517,7 @@ export default function Home() {
 
           <div className="relative mx-auto mt-16 max-w-6xl px-3 py-4 md:px-6 md:py-6">
             <div className="pointer-events-none absolute inset-0 opacity-16 [background-image:linear-gradient(to_right,rgba(0,0,0,0.04)_1px,transparent_1px),linear-gradient(to_bottom,rgba(0,0,0,0.03)_1px,transparent_1px)] [background-size:54px_54px]" />
-            <h3 className="title-unified mt-1 font-semibold uppercase text-[#0a0a0a]/96">
+            <h3 className="title-unified font-display mt-1 font-semibold uppercase text-[#0a0a0a]/96">
               COLLECTIONS
               <br />
               <span className="text-[#e20074]">MR MICROBE</span>
@@ -1560,7 +1560,7 @@ export default function Home() {
             <div className="mt-20 border-t border-[#0a0a0a]/10 pt-12">
               <div className="relative border-b border-[#0a0a0a]/10 pb-7">
                 <div className="flex items-end justify-between gap-4">
-                  <p className="title-unified font-semibold uppercase text-[#0a0a0a]/96">
+                  <p className="title-unified font-display font-semibold uppercase text-[#0a0a0a]/96">
                     REALISATION<span className="text-[#e20074]">S</span>
                   </p>
                 </div>
@@ -1580,10 +1580,10 @@ export default function Home() {
         <section id="artiste" className="bg-transparent px-0 py-10">
           <div className="relative px-6 pb-6 md:px-10">
             <div className="pointer-events-none absolute inset-0 opacity-20 [background-image:linear-gradient(to_right,rgba(0,0,0,0.045)_1px,transparent_1px),linear-gradient(to_bottom,rgba(0,0,0,0.035)_1px,transparent_1px)] [background-size:56px_56px]" />
-            <h3 className="title-unified relative mt-2 font-semibold uppercase text-[#0a0a0a]/95">
+            <h3 className="title-unified font-display relative mt-2 font-semibold uppercase text-[#0a0a0a]/95">
               Portrait
             </h3>
-            <p className="title-unified relative -mt-1 font-semibold uppercase text-[#e20074]">
+            <p className="title-unified font-display relative -mt-1 font-semibold uppercase text-[#e20074]">
               MR MICROBE
             </p>
           </div>
@@ -1689,7 +1689,7 @@ export default function Home() {
 
             <div className="relative grid items-start gap-6 border-b border-[#0a0a0a]/10 pb-6 md:grid-cols-[1.2fr_0.8fr]">
               <div>
-                <p className="title-unified mt-3 max-w-3xl font-semibold uppercase text-[#0a0a0a]/92">
+                <p className="title-unified font-display mt-3 max-w-3xl font-semibold uppercase text-[#0a0a0a]/92">
                   Immersion
                 </p>
                 <p className="mt-4 max-w-2xl text-[clamp(1.1rem,2vw,1.65rem)] leading-relaxed text-[#0a0a0a]/72">
@@ -1887,7 +1887,7 @@ export default function Home() {
             >
               <div>
                 <p className="text-[10px] font-black uppercase tracking-[0.32em] text-[#0a0a0a]/45">Contact</p>
-                <h3 className="mt-4 text-[clamp(3rem,8.6vw,8rem)] font-black uppercase leading-[0.86] tracking-[-0.05em] text-[#0a0a0a]">
+                <h3 className="font-display mt-4 text-[clamp(3rem,8.6vw,8rem)] font-black uppercase leading-[0.86] tracking-[-0.05em] text-[#0a0a0a]">
                   Lancez
                   <br />
                   votre

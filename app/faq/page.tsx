@@ -50,10 +50,10 @@ export default function FaqPage() {
         </div>
         <div className="relative mb-8 md:mb-10">
           <p className="text-[10px] font-black uppercase tracking-[0.34em] text-[#0a0a0a]/46">FAQ immersion</p>
-          <h1 className="mt-2 text-[clamp(2.5rem,6.3vw,6.2rem)] font-semibold uppercase leading-[0.88] tracking-[-0.05em] text-[#0a0a0a]/92">
+          <h1 className="font-display mt-2 text-[clamp(2.5rem,6.3vw,6.2rem)] font-semibold uppercase leading-[0.88] tracking-[-0.05em] text-[#0a0a0a]/92">
             Questions
           </h1>
-          <p className="-mt-1 text-[clamp(2.3rem,6vw,5.7rem)] font-semibold uppercase leading-[0.86] tracking-[-0.04em] text-[#e20074]">
+          <p className="font-display -mt-1 text-[clamp(2.3rem,6vw,5.7rem)] font-semibold uppercase leading-[0.86] tracking-[-0.04em] text-[#e20074]">
             Reponse
           </p>
         </div>
