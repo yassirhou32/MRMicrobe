@@ -1496,7 +1496,7 @@ export default function Home() {
 
         <section id="collections" className="bg-transparent px-5 py-14 md:px-10">
           <div className="space-y-4 lg:relative lg:left-[-15rem] lg:w-[calc(100%+15rem)]">
-            {["/images/Image 7.png"].map((src, index) => (
+            {["/images/Image 2.png"].map((src, index) => (
               <motion.article
                 key={`${src}-${index}`}
                 initial={{ opacity: 0, y: 22 }}
