@@ -14,7 +14,7 @@ const heroImages = [
   "/images/M7_02104.jpg",
 ];
 
-const realisationImages = ["/images/M7_01625.jpg", "/images/M7_03110.jpg", "/images/M7_03103.jpg", "/images/Image 4.png"];
+const realisationImages = ["/images/M7_01625.jpg", "/images/Image 6.png", "/images/M7_03103.jpg", "/images/Image 3.png"];
 
 const publicGalleryImages = [
   "/images/Image 7.png",
@@ -1422,12 +1422,7 @@ export default function Home() {
                 />
               </motion.h1>
               <div className="grid gap-6 pt-6 md:grid-cols-[1fr_auto] md:items-end">
-                <div>
-                  <p className="text-3xl font-semibold tracking-[-0.03em]">SOLUTIONS ARTISTIQUES</p>
-                  <p className="mt-2 max-w-2xl text-sm text-[#0a0a0a]/70">
-                    Collections, immersion, direction visuelle: un site plus impactant, plus vivant, plus assume.
-                  </p>
-                </div>
+                <div />
                 <div className="justify-self-end pt-2 md:w-[460px]">
                   <motion.p
                     key={`info-${infoIndex}`}
@@ -1501,7 +1496,7 @@ export default function Home() {
 
         <section id="collections" className="bg-transparent px-5 py-14 md:px-10">
           <div className="space-y-4 lg:relative lg:left-[-15rem] lg:w-[calc(100%+15rem)]">
-            {[heroImages[0]].map((src, index) => (
+            {["/images/Image 7.png"].map((src, index) => (
               <motion.article
                 key={`${src}-${index}`}
                 initial={{ opacity: 0, y: 22 }}
@@ -1801,7 +1796,7 @@ export default function Home() {
                             {step.title}
                           </p>
                           <p
-                            className={`mt-2 font-mono text-[clamp(0.88rem,1vw,1.02rem)] leading-[1.45] ${
+                            className={`mt-2 font-display text-[clamp(0.88rem,1vw,1.02rem)] leading-[1.45] ${
                               activeImmersionStep === index ? "text-white/72" : "text-[#0a0a0a]/62"
                             }`}
                           >
@@ -1866,13 +1861,6 @@ export default function Home() {
               </div>
             </div>
 
-            <div className="group relative left-1/2 mt-12 w-screen -translate-x-1/2 overflow-hidden lg:-ml-[15rem] lg:w-[calc(100vw+15rem)]">
-              <img
-                src="/images/Image 5.png"
-                alt="Immersion detail"
-                className="h-[72vh] min-h-[520px] w-full object-cover object-center transition duration-700 md:h-[92vh]"
-              />
-            </div>
           </div>
         </section>
 
