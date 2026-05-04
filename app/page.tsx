@@ -879,14 +879,23 @@ function MobileMenu({
 const preloaderLogoSrc = "/images/LOGO-MRMICROBE-3D-TRANSPARENT-removebg-preview.png";
 
 function Preloader({ done, progress, splitting }: { done: boolean; progress: number; splitting: boolean }) {
+  const [isLiteMode, setIsLiteMode] = useState(false);
   const splitOpen = splitting && !done;
   const introPhase = !splitting && !done;
   const firstBeat = introPhase && progress < 58;
-  const tiles = Array.from({ length: 60 }, (_, i) => i);
+  const tiles = Array.from({ length: isLiteMode ? 16 : 34 }, (_, i) => i);
+
+  useEffect(() => {
+    const mq = window.matchMedia("(max-width: 1024px), (prefers-reduced-motion: reduce)");
+    const sync = () => setIsLiteMode(mq.matches);
+    sync();
+    mq.addEventListener("change", sync);
+    return () => mq.removeEventListener("change", sync);
+  }, []);
 
   const worldAgents = useMemo(
     () =>
-      Array.from({ length: 30 }, (_, i) => {
+      Array.from({ length: isLiteMode ? 6 : 16 }, (_, i) => {
         const angle = ((i * 2.3999632297) % 1) * Math.PI * 2;
         const dist = 18 + (i % 6) * 7;
         const left = 50 + Math.cos(angle) * dist;
@@ -903,7 +912,7 @@ function Preloader({ done, progress, splitting }: { done: boolean; progress: num
           delay: i * 0.035,
         };
       }),
-    []
+    [isLiteMode]
   );
 
   return (
@@ -1060,43 +1069,47 @@ function Preloader({ done, progress, splitting }: { done: boolean; progress: num
 
       {/* Monde microbe premium: environnement volumétrique au moment du split */}
       <div className="pointer-events-none absolute inset-0 z-[4] overflow-hidden">
-        <motion.div
-          aria-hidden
-          className="absolute inset-0"
-          style={{
-            background:
-              "repeating-radial-gradient(circle at 50% 50%, rgba(255,155,214,0.32) 0%, rgba(255,155,214,0.32) 2.5%, rgba(226,0,116,0.2) 4.5%, rgba(32,7,24,0.2) 7%, rgba(18,4,12,0) 10.5%)",
-            filter: "blur(0.35px)",
-          }}
-          animate={{
-            opacity: splitOpen ? [0, 0.42, 0.75, 0.9, 0.42, 0] : 0,
-            scale: splitOpen ? [0.8, 1.05, 1.45, 2.25] : 1,
-            rotate: splitOpen ? [0, 8, 18] : 0,
-          }}
-          transition={{
-            duration: 1.65,
-            delay: splitOpen ? 1.1 : 0,
-            ease: [0.16, 0.92, 0.28, 1],
-          }}
-        />
+        {!isLiteMode && (
+          <motion.div
+            aria-hidden
+            className="absolute inset-0"
+            style={{
+              background:
+                "repeating-radial-gradient(circle at 50% 50%, rgba(255,155,214,0.32) 0%, rgba(255,155,214,0.32) 2.5%, rgba(226,0,116,0.2) 4.5%, rgba(32,7,24,0.2) 7%, rgba(18,4,12,0) 10.5%)",
+              filter: "blur(0.35px)",
+            }}
+            animate={{
+              opacity: splitOpen ? [0, 0.42, 0.75, 0.9, 0.42, 0] : 0,
+              scale: splitOpen ? [0.8, 1.05, 1.45, 2.25] : 1,
+              rotate: splitOpen ? [0, 8, 18] : 0,
+            }}
+            transition={{
+              duration: isLiteMode ? 0.8 : 1.25,
+              delay: splitOpen ? (isLiteMode ? 0.45 : 0.9) : 0,
+              ease: [0.16, 0.92, 0.28, 1],
+            }}
+          />
+        )}
 
-        <motion.div
-          aria-hidden
-          className="absolute inset-0"
-          style={{
-            background:
-              "radial-gradient(circle at 50% 50%, rgba(10,2,8,0) 0%, rgba(25,6,18,0.18) 34%, rgba(30,7,22,0.46) 56%, rgba(18,4,12,0.82) 100%)",
-          }}
-          animate={{
-            opacity: splitOpen ? [0, 0.35, 0.62, 0.86, 0.55, 0] : 0,
-            scale: splitOpen ? [0.95, 1.12, 1.32] : 1,
-          }}
-          transition={{
-            duration: 1.55,
-            delay: splitOpen ? 1.1 : 0,
-            ease: [0.2, 0.9, 0.34, 1],
-          }}
-        />
+        {!isLiteMode && (
+          <motion.div
+            aria-hidden
+            className="absolute inset-0"
+            style={{
+              background:
+                "radial-gradient(circle at 50% 50%, rgba(10,2,8,0) 0%, rgba(25,6,18,0.18) 34%, rgba(30,7,22,0.46) 56%, rgba(18,4,12,0.82) 100%)",
+            }}
+            animate={{
+              opacity: splitOpen ? [0, 0.35, 0.62, 0.86, 0.55, 0] : 0,
+              scale: splitOpen ? [0.95, 1.12, 1.32] : 1,
+            }}
+            transition={{
+              duration: isLiteMode ? 0.75 : 1.15,
+              delay: splitOpen ? (isLiteMode ? 0.42 : 0.88) : 0,
+              ease: [0.2, 0.9, 0.34, 1],
+            }}
+          />
+        )}
 
         <motion.div
           aria-hidden
@@ -1104,7 +1117,11 @@ function Preloader({ done, progress, splitting }: { done: boolean; progress: num
           animate={{
             opacity: splitOpen ? [0, 0.65, 0.9, 0.35, 0] : 0,
           }}
-          transition={{ duration: 1.65, delay: splitOpen ? 1.05 : 0, ease: [0.18, 0.9, 0.32, 1] }}
+          transition={{
+            duration: isLiteMode ? 0.9 : 1.25,
+            delay: splitOpen ? (isLiteMode ? 0.45 : 0.8) : 0,
+            ease: [0.18, 0.9, 0.32, 1],
+          }}
         >
           <motion.div
             className="aspect-square w-[18vmin] rounded-full"
@@ -1117,7 +1134,11 @@ function Preloader({ done, progress, splitting }: { done: boolean; progress: num
               scale: splitOpen ? [0.55, 2.2, 6.2, 10.8] : 0.55,
               opacity: splitOpen ? [0, 1, 1, 0.5, 0] : 0,
             }}
-            transition={{ duration: 1.65, delay: splitOpen ? 1.05 : 0, ease: [0.15, 0.92, 0.28, 1] }}
+            transition={{
+              duration: isLiteMode ? 0.92 : 1.25,
+              delay: splitOpen ? (isLiteMode ? 0.45 : 0.8) : 0,
+              ease: [0.15, 0.92, 0.28, 1],
+            }}
           />
         </motion.div>
 
@@ -1132,7 +1153,11 @@ function Preloader({ done, progress, splitting }: { done: boolean; progress: num
             opacity: done ? 0 : splitOpen ? [0, 0.54, 0.86, 0.65, 0] : 0,
             scale: splitOpen ? [0.92, 1.05, 1.22] : 1,
           }}
-          transition={{ duration: splitOpen ? 1.7 : 0.2, delay: splitOpen ? 1.05 : 0, ease: [0.2, 0.88, 0.35, 1] }}
+          transition={{
+            duration: splitOpen ? (isLiteMode ? 1.0 : 1.25) : 0.2,
+            delay: splitOpen ? (isLiteMode ? 0.44 : 0.8) : 0,
+            ease: [0.2, 0.88, 0.35, 1],
+          }}
         />
         {worldAgents.map((m) => (
           <motion.img
@@ -1165,7 +1190,11 @@ function Preloader({ done, progress, splitting }: { done: boolean; progress: num
             }
             transition={
               splitOpen
-                ? { duration: 1.7, delay: 1.0 + m.delay * 0.45, ease: [0.18, 0.9, 0.3, 1] }
+                ? {
+                    duration: isLiteMode ? 0.95 : 1.7,
+                    delay: (isLiteMode ? 0.3 : 1.0) + m.delay * (isLiteMode ? 0.2 : 0.45),
+                    ease: [0.18, 0.9, 0.3, 1],
+                  }
                 : { duration: 0.2 }
             }
           />
@@ -1231,7 +1260,11 @@ function Preloader({ done, progress, splitting }: { done: boolean; progress: num
               animate={{
                 opacity: splitOpen ? [0, 0.92, 0.56, 0.16, 0] : 0,
               }}
-              transition={{ duration: 1.25, delay: splitOpen ? 0.92 : 0, ease: [0.2, 0.88, 0.35, 1] }}
+              transition={{
+                duration: isLiteMode ? 0.72 : 1.0,
+                delay: splitOpen ? (isLiteMode ? 0.38 : 0.72) : 0,
+                ease: [0.2, 0.88, 0.35, 1],
+              }}
             >
               <motion.div
                 className="aspect-square w-[18%] rounded-full"
@@ -1244,7 +1277,11 @@ function Preloader({ done, progress, splitting }: { done: boolean; progress: num
                   scale: splitOpen ? [0.12, 1.25, 8.2, 12.2] : 0.12,
                   opacity: splitOpen ? [0, 0.9, 0.95, 0.35, 0] : 0,
                 }}
-                transition={{ duration: 1.35, delay: splitOpen ? 0.9 : 0, ease: [0.12, 0.94, 0.26, 1] }}
+                transition={{
+                  duration: isLiteMode ? 0.82 : 1.05,
+                  delay: splitOpen ? (isLiteMode ? 0.36 : 0.7) : 0,
+                  ease: [0.12, 0.94, 0.26, 1],
+                }}
               />
             </motion.div>
 
@@ -1324,12 +1361,23 @@ function Preloader({ done, progress, splitting }: { done: boolean; progress: num
                       : "blur(0px) drop-shadow(0 16px 48px rgba(226,0,116,0.28)) drop-shadow(0 4px 20px rgba(236,72,153,0.18))",
                   }}
                   transition={{
-                    duration: 1.45,
-                    delay: splitOpen ? piece.delay : 0,
+                    duration: isLiteMode ? 0.9 : 1.1,
+                    delay: splitOpen ? (isLiteMode ? piece.delay * 0.55 : piece.delay * 0.75) : 0,
                     ease: [0.16, 0.84, 0.3, 1],
-                    scale: { duration: 1.45, delay: splitOpen ? piece.delay : 0, times: [0, 0.6, 1] },
-                    filter: { duration: 1.45, delay: splitOpen ? piece.delay : 0 },
-                    opacity: { duration: 1.45, delay: splitOpen ? piece.delay : 0, times: [0, 0.45, 0.72, 0.88, 1] },
+                    scale: {
+                      duration: isLiteMode ? 0.9 : 1.1,
+                      delay: splitOpen ? (isLiteMode ? piece.delay * 0.55 : piece.delay * 0.75) : 0,
+                      times: [0, 0.6, 1],
+                    },
+                    filter: {
+                      duration: isLiteMode ? 0.9 : 1.1,
+                      delay: splitOpen ? (isLiteMode ? piece.delay * 0.55 : piece.delay * 0.75) : 0,
+                    },
+                    opacity: {
+                      duration: isLiteMode ? 0.9 : 1.1,
+                      delay: splitOpen ? (isLiteMode ? piece.delay * 0.55 : piece.delay * 0.75) : 0,
+                      times: [0, 0.45, 0.72, 0.88, 1],
+                    },
                   }}
                 >
                   <img
@@ -1722,22 +1770,23 @@ export default function Home() {
   const contactY = useSpring(useTransform(scrollYProgress, [0.84, 1], [24, 0]), { stiffness: 72, damping: 24 });
 
   useEffect(() => {
+    const compactEntry = window.matchMedia("(max-width: 1280px), (prefers-reduced-motion: reduce)").matches;
     const interval = setInterval(() => {
       setProgress((prev) => {
         if (prev >= 100) return 100;
-        const step = prev < 60 ? 5 : prev < 90 ? 3 : 2;
+        const step = compactEntry ? (prev < 60 ? 10 : prev < 90 ? 6 : 4) : prev < 60 ? 7 : prev < 90 ? 4 : 3;
         return Math.min(100, prev + step);
       });
-    }, 48);
+    }, compactEntry ? 28 : 36);
 
     const introEnd = setTimeout(() => {
       setProgress(100);
       setSplashSplitting(true);
-    }, 1400);
+    }, compactEntry ? 520 : 780);
 
     const revealSite = setTimeout(() => {
       setReady(true);
-    }, 4200);
+    }, compactEntry ? 1500 : 2100);
 
     return () => {
       clearInterval(interval);
