@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useMemo } from "react";
+import { Suspense, useMemo } from "react";
 import { useSearchParams } from "next/navigation";
 import { motion } from "framer-motion";
 import { PerspectiveCarousel } from "@/components/PerspectiveCarousel";
@@ -12,7 +12,7 @@ import {
   collectionTitleFromSlug,
 } from "@/lib/collectionGallery";
 
-export default function RealisationsPage() {
+function RealisationsContent() {
   const searchParams = useSearchParams();
   const requestedSlug = searchParams.get("collection") ?? "";
   const selectedCollection = collectionTitleFromSlug(requestedSlug) ?? collectionShowcaseTitles[0];
@@ -90,6 +90,14 @@ export default function RealisationsPage() {
         />
       </section>
     </main>
+  );
+}
+
+export default function RealisationsPage() {
+  return (
+    <Suspense fallback={<main className="min-h-screen bg-[#f5f5f5]" />}>
+      <RealisationsContent />
+    </Suspense>
   );
 }
 
