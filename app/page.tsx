@@ -889,8 +889,12 @@ function Preloader({ done, progress, splitting }: { done: boolean; progress: num
     const mq = window.matchMedia("(max-width: 1024px), (prefers-reduced-motion: reduce)");
     const sync = () => setIsLiteMode(mq.matches);
     sync();
-    mq.addEventListener("change", sync);
-    return () => mq.removeEventListener("change", sync);
+    if (typeof mq.addEventListener === "function") {
+      mq.addEventListener("change", sync);
+      return () => mq.removeEventListener("change", sync);
+    }
+    mq.addListener(sync);
+    return () => mq.removeListener(sync);
   }, []);
 
   const worldAgents = useMemo(
@@ -1084,9 +1088,9 @@ function Preloader({ done, progress, splitting }: { done: boolean; progress: num
               rotate: splitOpen ? [0, 8, 18] : 0,
             }}
             transition={{
-              duration: isLiteMode ? 0.8 : 1.25,
-              delay: splitOpen ? (isLiteMode ? 0.45 : 0.9) : 0,
-              ease: [0.16, 0.92, 0.28, 1],
+              duration: isLiteMode ? 1.0 : 1.4,
+              delay: splitOpen ? (isLiteMode ? 0.52 : 0.95) : 0,
+              ease: [0.22, 0.88, 0.32, 1],
             }}
           />
         )}
@@ -1104,9 +1108,9 @@ function Preloader({ done, progress, splitting }: { done: boolean; progress: num
               scale: splitOpen ? [0.95, 1.12, 1.32] : 1,
             }}
             transition={{
-              duration: isLiteMode ? 0.75 : 1.15,
-              delay: splitOpen ? (isLiteMode ? 0.42 : 0.88) : 0,
-              ease: [0.2, 0.9, 0.34, 1],
+              duration: isLiteMode ? 0.95 : 1.3,
+              delay: splitOpen ? (isLiteMode ? 0.5 : 0.92) : 0,
+              ease: [0.22, 0.72, 0.22, 1],
             }}
           />
         )}
@@ -1118,9 +1122,9 @@ function Preloader({ done, progress, splitting }: { done: boolean; progress: num
             opacity: splitOpen ? [0, 0.65, 0.9, 0.35, 0] : 0,
           }}
           transition={{
-            duration: isLiteMode ? 0.9 : 1.25,
-            delay: splitOpen ? (isLiteMode ? 0.45 : 0.8) : 0,
-            ease: [0.18, 0.9, 0.32, 1],
+            duration: isLiteMode ? 1.05 : 1.45,
+            delay: splitOpen ? (isLiteMode ? 0.52 : 0.88) : 0,
+            ease: [0.22, 0.72, 0.22, 1],
           }}
         >
           <motion.div
@@ -1135,9 +1139,9 @@ function Preloader({ done, progress, splitting }: { done: boolean; progress: num
               opacity: splitOpen ? [0, 1, 1, 0.5, 0] : 0,
             }}
             transition={{
-              duration: isLiteMode ? 0.92 : 1.25,
-              delay: splitOpen ? (isLiteMode ? 0.45 : 0.8) : 0,
-              ease: [0.15, 0.92, 0.28, 1],
+              duration: isLiteMode ? 1.05 : 1.45,
+              delay: splitOpen ? (isLiteMode ? 0.52 : 0.88) : 0,
+              ease: [0.22, 0.72, 0.22, 1],
             }}
           />
         </motion.div>
@@ -1154,9 +1158,9 @@ function Preloader({ done, progress, splitting }: { done: boolean; progress: num
             scale: splitOpen ? [0.92, 1.05, 1.22] : 1,
           }}
           transition={{
-            duration: splitOpen ? (isLiteMode ? 1.0 : 1.25) : 0.2,
-            delay: splitOpen ? (isLiteMode ? 0.44 : 0.8) : 0,
-            ease: [0.2, 0.88, 0.35, 1],
+            duration: splitOpen ? (isLiteMode ? 1.15 : 1.45) : 0.2,
+            delay: splitOpen ? (isLiteMode ? 0.5 : 0.9) : 0,
+            ease: [0.22, 0.72, 0.22, 1],
           }}
         />
         {worldAgents.map((m) => (
@@ -1191,9 +1195,9 @@ function Preloader({ done, progress, splitting }: { done: boolean; progress: num
             transition={
               splitOpen
                 ? {
-                    duration: isLiteMode ? 0.95 : 1.7,
-                    delay: (isLiteMode ? 0.3 : 1.0) + m.delay * (isLiteMode ? 0.2 : 0.45),
-                    ease: [0.18, 0.9, 0.3, 1],
+                    duration: isLiteMode ? 1.15 : 1.75,
+                    delay: (isLiteMode ? 0.4 : 0.98) + m.delay * (isLiteMode ? 0.22 : 0.42),
+                    ease: [0.22, 0.72, 0.22, 1],
                   }
                 : { duration: 0.2 }
             }
@@ -1226,11 +1230,11 @@ function Preloader({ done, progress, splitting }: { done: boolean; progress: num
             initial={{ opacity: 0, y: 18, scale: 0.86, rotateX: 8 }}
             animate={{
               opacity: done ? 0 : 1,
-              y: splitOpen ? -5 : introPhase ? [0, -3, 0] : 0,
+              y: splitOpen ? -4 : introPhase ? [0, -3, 0] : 0,
               rotateX: splitOpen ? [7, 3, 0, -1.5] : introPhase ? [8, 5, 7, 5] : 8,
               rotateY: splitOpen ? [0, -2.5, 0] : introPhase ? [0, 1.2, -1.2, 0] : 0,
-              z: splitOpen ? [0, 180, 360] : introPhase ? [0, 22, 0] : 0,
-              scale: splitOpen ? [1, 1.18, 1.06] : introPhase ? [1, 1.018, 0.998, 1.012, 1] : 1,
+              z: splitOpen ? [0, 110, 210] : introPhase ? [0, 22, 0] : 0,
+              scale: splitOpen ? [1, 1.12, 1.04] : introPhase ? [1, 1.018, 0.998, 1.012, 1] : 1,
             }}
             transition={{
               opacity: { duration: 0.42, delay: done ? 0.08 : 0, ease: [0.22, 1, 0.36, 1] },
@@ -1261,9 +1265,9 @@ function Preloader({ done, progress, splitting }: { done: boolean; progress: num
                 opacity: splitOpen ? [0, 0.92, 0.56, 0.16, 0] : 0,
               }}
               transition={{
-                duration: isLiteMode ? 0.72 : 1.0,
-                delay: splitOpen ? (isLiteMode ? 0.38 : 0.72) : 0,
-                ease: [0.2, 0.88, 0.35, 1],
+                duration: isLiteMode ? 0.92 : 1.2,
+                delay: splitOpen ? (isLiteMode ? 0.46 : 0.78) : 0,
+                ease: [0.22, 0.72, 0.22, 1],
               }}
             >
               <motion.div
@@ -1278,9 +1282,9 @@ function Preloader({ done, progress, splitting }: { done: boolean; progress: num
                   opacity: splitOpen ? [0, 0.9, 0.95, 0.35, 0] : 0,
                 }}
                 transition={{
-                  duration: isLiteMode ? 0.82 : 1.05,
-                  delay: splitOpen ? (isLiteMode ? 0.36 : 0.7) : 0,
-                  ease: [0.12, 0.94, 0.26, 1],
+                  duration: isLiteMode ? 0.98 : 1.25,
+                  delay: splitOpen ? (isLiteMode ? 0.44 : 0.76) : 0,
+                  ease: [0.22, 0.72, 0.22, 1],
                 }}
               />
             </motion.div>
@@ -1357,25 +1361,25 @@ function Preloader({ done, progress, splitting }: { done: boolean; progress: num
                     scale: splitOpen ? [1, 1.04, 1.06] : 1,
                     opacity: splitOpen ? [1, 1, 0.97, 0.7, 0] : 1,
                     filter: splitOpen
-                      ? ["blur(0px)", "blur(0px)", "blur(1px)", "blur(3px)", "blur(5px)"]
+                      ? ["blur(0px)", "blur(0px)", "blur(0.8px)", "blur(2px)", "blur(3px)"]
                       : "blur(0px) drop-shadow(0 16px 48px rgba(226,0,116,0.28)) drop-shadow(0 4px 20px rgba(236,72,153,0.18))",
                   }}
                   transition={{
-                    duration: isLiteMode ? 0.9 : 1.1,
-                    delay: splitOpen ? (isLiteMode ? piece.delay * 0.55 : piece.delay * 0.75) : 0,
-                    ease: [0.16, 0.84, 0.3, 1],
+                    duration: isLiteMode ? 1.12 : 1.35,
+                    delay: splitOpen ? (isLiteMode ? piece.delay * 0.65 : piece.delay * 0.82) : 0,
+                    ease: [0.22, 0.72, 0.22, 1],
                     scale: {
-                      duration: isLiteMode ? 0.9 : 1.1,
-                      delay: splitOpen ? (isLiteMode ? piece.delay * 0.55 : piece.delay * 0.75) : 0,
+                      duration: isLiteMode ? 1.12 : 1.35,
+                      delay: splitOpen ? (isLiteMode ? piece.delay * 0.65 : piece.delay * 0.82) : 0,
                       times: [0, 0.6, 1],
                     },
                     filter: {
-                      duration: isLiteMode ? 0.9 : 1.1,
-                      delay: splitOpen ? (isLiteMode ? piece.delay * 0.55 : piece.delay * 0.75) : 0,
+                      duration: isLiteMode ? 1.12 : 1.35,
+                      delay: splitOpen ? (isLiteMode ? piece.delay * 0.65 : piece.delay * 0.82) : 0,
                     },
                     opacity: {
-                      duration: isLiteMode ? 0.9 : 1.1,
-                      delay: splitOpen ? (isLiteMode ? piece.delay * 0.55 : piece.delay * 0.75) : 0,
+                      duration: isLiteMode ? 1.12 : 1.35,
+                      delay: splitOpen ? (isLiteMode ? piece.delay * 0.65 : piece.delay * 0.82) : 0,
                       times: [0, 0.45, 0.72, 0.88, 1],
                     },
                   }}
@@ -1774,19 +1778,19 @@ export default function Home() {
     const interval = setInterval(() => {
       setProgress((prev) => {
         if (prev >= 100) return 100;
-        const step = compactEntry ? (prev < 60 ? 10 : prev < 90 ? 6 : 4) : prev < 60 ? 7 : prev < 90 ? 4 : 3;
+        const step = compactEntry ? (prev < 60 ? 7 : prev < 90 ? 4 : 3) : prev < 60 ? 5 : prev < 90 ? 3 : 2;
         return Math.min(100, prev + step);
       });
-    }, compactEntry ? 28 : 36);
+    }, compactEntry ? 36 : 44);
 
     const introEnd = setTimeout(() => {
       setProgress(100);
       setSplashSplitting(true);
-    }, compactEntry ? 520 : 780);
+    }, compactEntry ? 980 : 1180);
 
     const revealSite = setTimeout(() => {
       setReady(true);
-    }, compactEntry ? 1500 : 2100);
+    }, compactEntry ? 2700 : 3200);
 
     return () => {
       clearInterval(interval);
