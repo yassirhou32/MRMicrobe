@@ -26,6 +26,11 @@ body {
   font-family: var(--font-outfit), ui-sans-serif, system-ui, sans-serif;
 }
 
+/* Curseur personnalisé (microbe) : masque le pointeur système quand actif */
+body.custom-cursor-microbe * {
+  cursor: none !important;
+}
+
 /* Titres */
 .font-display {
   font-family: var(--font-outfit), ui-sans-serif, system-ui, sans-serif;

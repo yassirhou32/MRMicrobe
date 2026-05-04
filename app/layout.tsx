@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Geist_Mono, Outfit } from "next/font/google";
+import { CookieConsentBanner } from "../components/CookieConsentBanner";
 import "./globals.css";
 
 const outfit = Outfit({
@@ -30,6 +31,7 @@ export default function RootLayout({
     >
       <body className="min-h-full flex flex-col bg-[#f5f5f5] text-[#0a0a0a] selection:bg-[#0a0a0a] selection:text-white">
         {children}
+        <CookieConsentBanner />
       </body>
     </html>
   );
