@@ -810,10 +810,10 @@ function MobileMenu({
         className="fixed inset-0 z-[80] lg:hidden"
       >
         <div className="absolute inset-0 bg-[#0a0a0a]" />
-        <div className="relative flex h-full flex-col px-7 pb-9 pt-6 text-white">
+        <div className="relative flex h-full flex-col px-7 pb-9 pt-6 text-[#e20074]">
           <div className="flex items-start justify-between">
             <div className="flex items-end gap-3">
-              <p className="font-display text-[2rem] font-semibold leading-[0.82] tracking-[-0.04em] text-white/90">
+              <p className="font-display text-[2rem] font-semibold leading-[0.82] tracking-[-0.04em] text-[#e20074]">
                 MR
                 <br />
                 MICROBE
@@ -827,7 +827,7 @@ function MobileMenu({
             <button
               type="button"
               onClick={onClose}
-              className="border border-white/40 px-3 py-1.5 text-[11px] font-black uppercase tracking-[0.2em] text-white"
+              className="border border-[#e20074]/55 px-3 py-1.5 text-[11px] font-black uppercase tracking-[0.2em] text-[#e20074]"
             >
               Close
             </button>
@@ -839,7 +839,7 @@ function MobileMenu({
                 key={label}
                 href={href}
                 onClick={onClose}
-                className="font-display block text-[clamp(2.4rem,11vw,3.3rem)] font-black uppercase leading-[0.9] tracking-[-0.03em] text-white"
+                className="font-display block text-[clamp(2.4rem,11vw,3.3rem)] font-black uppercase leading-[0.9] tracking-[-0.03em] text-[#e20074]"
               >
                 {label}
               </a>
@@ -848,7 +848,7 @@ function MobileMenu({
 
           <div className="mt-auto space-y-5 pt-8">
             <div>
-              <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-white/35">Socials</p>
+              <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-[#e20074]/60">Socials</p>
               <div className="mt-2 flex items-center gap-3 text-[1.9rem] font-semibold leading-none">
                 <svg
                   aria-hidden
@@ -866,8 +866,8 @@ function MobileMenu({
               </div>
             </div>
             <div>
-              <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-white/35">Inquiries</p>
-              <p className="mt-2 break-all text-[1.3rem] font-semibold leading-tight">mrmicrobe.furgerot@gmail.com</p>
+              <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-[#e20074]/60">Inquiries</p>
+              <p className="mt-2 break-all text-[1.3rem] font-semibold leading-tight text-[#e20074]">mrmicrobe.furgerot@gmail.com</p>
             </div>
           </div>
         </div>
