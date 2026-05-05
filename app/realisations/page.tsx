@@ -117,9 +117,9 @@ function RealisationsContent() {
               ctaLabel="Voir la collection"
               accentColor="#9a0050"
               bgColor="transparent"
-              cardWidth={380}
-              cardHeight={500}
-              stageHeight={560}
+              cardWidth={384}
+              cardHeight={504}
+              stageHeight={564}
             />
           </div>
         )}
