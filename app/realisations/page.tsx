@@ -1,10 +1,11 @@
 "use client";
 
 import Link from "next/link";
-import { Suspense, useMemo } from "react";
+import { Suspense, useEffect, useMemo, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { motion } from "framer-motion";
 import { PerspectiveCarousel } from "@/components/PerspectiveCarousel";
+import { Carousel3DPerspective } from "@/components/Carousel3DPerspective";
 import {
   buildGalleryImagesForCollection,
   collectionShowcaseTitles,
@@ -14,6 +15,7 @@ import {
 
 function RealisationsContent() {
   const searchParams = useSearchParams();
+  const [isMobileViewport, setIsMobileViewport] = useState(false);
   const requestedSlug = searchParams.get("collection") ?? "";
   const selectedCollection = collectionTitleFromSlug(requestedSlug) ?? collectionShowcaseTitles[0];
 
@@ -26,6 +28,28 @@ function RealisationsContent() {
     [selectedCollection]
   );
   const carouselImages = useMemo(() => Array.from(new Set([...canvasImages, ...paperImages])), [canvasImages, paperImages]);
+  const mobilePerspectiveItems = useMemo(
+    () =>
+      carouselImages.map((image, index) => ({
+        id: `${selectedCollection}-${index}`,
+        image,
+        title: selectedCollection,
+        subtitle: `Image ${index + 1}`,
+      })),
+    [carouselImages, selectedCollection]
+  );
+
+  useEffect(() => {
+    const mq = window.matchMedia("(max-width: 767px)");
+    const sync = () => setIsMobileViewport(mq.matches);
+    sync();
+    if (typeof mq.addEventListener === "function") {
+      mq.addEventListener("change", sync);
+      return () => mq.removeEventListener("change", sync);
+    }
+    mq.addListener(sync);
+    return () => mq.removeListener(sync);
+  }, []);
 
   return (
     <main className="relative z-10 min-h-screen scroll-smooth bg-transparent pb-0 text-[#0a0a0a]">
@@ -69,25 +93,39 @@ function RealisationsContent() {
       </section>
 
       <section className="pb-0">
-        <PerspectiveCarousel
-          key={selectedCollection}
-          images={carouselImages}
-          cardCount={5}
-          backgroundColor="bg-transparent"
-          containerHeight="h-[130vh]"
-          perspective="perspective-[1000px]"
-          cardWidth="w-[600px]"
-          cardHeight="h-[400px]"
-          cardBgColor="bg-transparent"
-          cardBorderColor="border-[#0a0a0a]/14"
-          cardPadding="p-4"
-          imageOpacity={0.95}
-          labelColor="text-[#0a0a0a]/18"
-          labelSize="text-6xl"
-          translateZ={600}
-          rotateYRange={[0, 1080]}
-          scrollOffset={["start start", "end end"]}
-        />
+        {isMobileViewport ? (
+          <div className="-mt-44 px-2 pb-2">
+            <Carousel3DPerspective
+              items={mobilePerspectiveItems}
+              defaultActive={Math.min(2, Math.max(0, mobilePerspectiveItems.length - 1))}
+              heading="Choisissez votre piece"
+              subheading="Explorez la collection en version mobile fluide"
+              ctaLabel="Voir la collection"
+              accentColor="#9a0050"
+              bgColor="transparent"
+            />
+          </div>
+        ) : (
+          <PerspectiveCarousel
+            key={selectedCollection}
+            images={carouselImages}
+            cardCount={5}
+            backgroundColor="bg-transparent"
+            containerHeight="h-[130vh]"
+            perspective="perspective-[1000px]"
+            cardWidth="w-[600px]"
+            cardHeight="h-[400px]"
+            cardBgColor="bg-transparent"
+            cardBorderColor="border-[#0a0a0a]/14"
+            cardPadding="p-4"
+            imageOpacity={0.95}
+            labelColor="text-[#0a0a0a]/18"
+            labelSize="text-6xl"
+            translateZ={600}
+            rotateYRange={[0, 1080]}
+            scrollOffset={["start start", "end end"]}
+          />
+        )}
       </section>
     </main>
   );

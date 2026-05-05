@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { motion, useScroll, useSpring, useTransform } from "framer-motion";
+import { motion, useReducedMotion, useScroll, useSpring, useTransform } from "framer-motion";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import Link from "next/link";
@@ -1749,6 +1749,7 @@ function CollectionsShowcaseList({
 
 export default function Home() {
   const router = useRouter();
+  const prefersReducedMotion = useReducedMotion();
   const [ready, setReady] = useState(false);
   const [splashSplitting, setSplashSplitting] = useState(false);
   const [progress, setProgress] = useState(0);
@@ -1756,6 +1757,7 @@ export default function Home() {
   const [contactStep, setContactStep] = useState(1);
   const [immersionStepIndex, setImmersionStepIndex] = useState(0);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [isMobileEntry, setIsMobileEntry] = useState(false);
   const isMobileCollections = useIsMobileCollectionsViewport();
 
   const openCollectionGallery = useCallback(
@@ -1772,6 +1774,18 @@ export default function Home() {
   const collectionsY = useSpring(useTransform(scrollYProgress, [0.32, 0.58], [36, -20]), { stiffness: 80, damping: 24 });
   const artisteY = useSpring(useTransform(scrollYProgress, [0.52, 0.76], [30, -18]), { stiffness: 78, damping: 24 });
   const contactY = useSpring(useTransform(scrollYProgress, [0.84, 1], [24, 0]), { stiffness: 72, damping: 24 });
+
+  useEffect(() => {
+    const mq = window.matchMedia("(max-width: 1024px)");
+    const sync = () => setIsMobileEntry(mq.matches);
+    sync();
+    if (typeof mq.addEventListener === "function") {
+      mq.addEventListener("change", sync);
+      return () => mq.removeEventListener("change", sync);
+    }
+    mq.addListener(sync);
+    return () => mq.removeListener(sync);
+  }, []);
 
   useEffect(() => {
     const compactEntry = window.matchMedia("(max-width: 1280px), (prefers-reduced-motion: reduce)").matches;
@@ -1822,6 +1836,7 @@ export default function Home() {
     "Direction artistique sur mesure pour lieux prives ou recevant du public.",
   ];
   const heroHeadlineLines = [["MR"], ["MICROBE,"], ["DU", "DESSIN"], ["À", "LA"], ["MATI\u00C8RE"]] as const;
+  const useLightHeroAnimation = isMobileEntry || Boolean(prefersReducedMotion);
 
   return (
     <main className="relative min-h-screen scroll-smooth overflow-x-hidden bg-[#f5f5f5] pb-0 text-[#0a0a0a] selection:bg-[#0a0a0a] selection:text-white">
@@ -1861,7 +1876,7 @@ export default function Home() {
               <motion.h1
                 initial={{ y: 40, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
-                transition={{ duration: 0.9 }}
+                transition={{ duration: useLightHeroAnimation ? 0.35 : 0.9, ease: "easeOut" }}
                 className="font-display relative max-w-4xl text-[clamp(3.2rem,8.9vw,9rem)] font-black leading-[0.865] tracking-[-0.06em] text-[#0a0a0a]"
               >
                 <span className="relative z-[1] block">
@@ -1881,9 +1896,17 @@ export default function Home() {
                       {line.map((word, wordIndex) => (
                         <motion.span
                           key={`hero-word-${lineIndex}-${wordIndex}-${word}`}
-                          initial={{ opacity: 0, y: 24, filter: "blur(7px)" }}
-                          animate={ready ? { opacity: 1, y: 0, filter: "blur(0px)" } : { opacity: 0, y: 24, filter: "blur(7px)" }}
-                          transition={{ duration: 0.55, ease: "easeOut", delay: 0.15 + lineIndex * 0.18 + wordIndex * 0.1 }}
+                          initial={{ opacity: 0, y: useLightHeroAnimation ? 6 : 24 }}
+                          animate={
+                            ready
+                              ? { opacity: 1, y: 0 }
+                              : { opacity: 0, y: useLightHeroAnimation ? 6 : 24 }
+                          }
+                          transition={
+                            useLightHeroAnimation
+                              ? { duration: 0.18, ease: "easeOut", delay: 0.02 }
+                              : { duration: 0.55, ease: "easeOut", delay: 0.15 + lineIndex * 0.18 + wordIndex * 0.1 }
+                          }
                           className={`mr-[0.24em] inline-block last:mr-0 ${lineIndex <= 1 ? "text-[#e20074]" : ""}`}
                         >
                           {word}
@@ -1894,9 +1917,21 @@ export default function Home() {
                 </span>
                 <motion.span
                   aria-hidden
-                  initial={{ scaleX: 0, opacity: 0 }}
-                  animate={ready ? { scaleX: 1, opacity: 1 } : { scaleX: 0, opacity: 0 }}
-                  transition={{ duration: 0.6, delay: 0.8, ease: "easeOut" }}
+                  initial={useLightHeroAnimation ? { opacity: 0 } : { scaleX: 0, opacity: 0 }}
+                  animate={
+                    ready
+                      ? useLightHeroAnimation
+                        ? { opacity: 1 }
+                        : { scaleX: 1, opacity: 1 }
+                      : useLightHeroAnimation
+                        ? { opacity: 0 }
+                        : { scaleX: 0, opacity: 0 }
+                  }
+                  transition={
+                    useLightHeroAnimation
+                      ? { duration: 0.18, delay: 0.02, ease: "linear" }
+                      : { duration: 0.6, delay: 0.8, ease: "easeOut" }
+                  }
                   className="mt-[calc(0.11rem*1.03)] block h-[2px] w-44 origin-left bg-[#0a0a0a]/72"
                 />
               </motion.h1>
