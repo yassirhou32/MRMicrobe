@@ -19,6 +19,9 @@ interface Carousel3DPerspectiveProps {
   ctaLabel?: string;
   accentColor?: string;
   bgColor?: string;
+  cardWidth?: number;
+  cardHeight?: number;
+  stageHeight?: number;
 }
 
 const DEFAULT_ITEMS: PerspectiveItem[] = [
@@ -95,6 +98,9 @@ export const Carousel3DPerspective: React.FC<Carousel3DPerspectiveProps> = ({
   ctaLabel = "Add To Cart",
   accentColor = "#166534",
   bgColor = "#f0f0f6",
+  cardWidth = 200,
+  cardHeight = 260,
+  stageHeight = 300,
 }) => {
   const [active, setActive] = useState(defaultActive);
   const [liked, setLiked] = useState(false);
@@ -129,7 +135,7 @@ export const Carousel3DPerspective: React.FC<Carousel3DPerspectiveProps> = ({
       <div
         className="relative flex w-full items-center justify-center"
         style={{
-          height: 300,
+          height: stageHeight,
           perspective: "1000px",
           overflow: "visible",
         }}
@@ -158,8 +164,8 @@ export const Carousel3DPerspective: React.FC<Carousel3DPerspectiveProps> = ({
                 if (normDist === 1) goNext();
               }}
               style={{
-                width: 200,
-                height: 260,
+                width: cardWidth,
+                height: cardHeight,
                 borderRadius: 20,
                 zIndex: t.zIndex,
                 cursor: normDist !== 0 ? "pointer" : "default",
