@@ -1421,18 +1421,10 @@ function MicrobeCursor() {
 
     const onMove = (event: MouseEvent) => updateFromClient(event.clientX, event.clientY);
 
-    const onTouch = (event: TouchEvent) => {
-      const t = event.touches[0];
-      if (t) updateFromClient(t.clientX, t.clientY);
-    };
-
     const onLeave = () => setVisible(false);
 
     window.addEventListener("mousemove", onMove);
     window.addEventListener("mouseout", onLeave);
-    window.addEventListener("touchstart", onTouch, { passive: true });
-    window.addEventListener("touchmove", onTouch, { passive: true });
-    window.addEventListener("touchend", onLeave);
 
     const mq = window.matchMedia("(hover: hover) and (pointer: fine)");
     const syncBodyCursor = () => {
@@ -1445,9 +1437,6 @@ function MicrobeCursor() {
     return () => {
       window.removeEventListener("mousemove", onMove);
       window.removeEventListener("mouseout", onLeave);
-      window.removeEventListener("touchstart", onTouch);
-      window.removeEventListener("touchmove", onTouch);
-      window.removeEventListener("touchend", onLeave);
       mq.removeEventListener("change", syncBodyCursor);
       document.body.classList.remove("custom-cursor-microbe");
     };
@@ -1842,7 +1831,7 @@ export default function Home() {
     <main className="relative min-h-screen scroll-smooth overflow-x-hidden bg-[#f5f5f5] pb-0 text-[#0a0a0a] selection:bg-[#0a0a0a] selection:text-white">
       <Preloader done={ready} progress={progress} splitting={splashSplitting} />
       <CurveBackground />
-      <MicrobeCursor />
+      {!isMobileEntry && <MicrobeCursor />}
       <LeftRail />
       <MobileMenu
         open={mobileMenuOpen}
