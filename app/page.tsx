@@ -796,7 +796,7 @@ function MobileMenu({
         <button
           type="button"
           onClick={onToggle}
-          className="inline-flex items-center rounded-full bg-[#0a0a0a] px-5 py-2 text-[11px] font-black uppercase tracking-[0.2em] text-white"
+          className="inline-flex items-center rounded-full border border-[#0a0a0a]/15 bg-white/80 px-5 py-2 text-[11px] font-black uppercase tracking-[0.2em] text-[#0a0a0a] shadow-[0_8px_24px_-16px_rgba(0,0,0,0.35)] backdrop-blur-[2px]"
         >
           {open ? "Close" : "Menu"}
         </button>
@@ -809,11 +809,12 @@ function MobileMenu({
         transition={{ duration: 0.25, ease: "easeOut" }}
         className="fixed inset-0 z-[80] lg:hidden"
       >
-        <div className="absolute inset-0 bg-[#0a0a0a]" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_14%_10%,rgba(226,0,116,0.14)_0%,rgba(226,0,116,0)_38%),linear-gradient(180deg,#0b0b0c_0%,#060607_58%,#040405_100%)]" />
+        <div className="pointer-events-none absolute inset-0 opacity-[0.06] [background-image:linear-gradient(to_right,rgba(255,255,255,0.2)_1px,transparent_1px),linear-gradient(to_bottom,rgba(255,255,255,0.12)_1px,transparent_1px)] [background-size:28px_28px]" />
         <div className="relative flex h-full flex-col px-7 pb-9 pt-6 text-[#e20074]">
-          <div className="flex items-start justify-between">
+          <div className="flex items-start justify-between border-b border-white/10 pb-5">
             <div className="flex items-end gap-3">
-              <p className="font-display text-[2rem] font-semibold leading-[0.82] tracking-[-0.04em] text-[#e20074]">
+              <p className="font-display text-[1.9rem] font-semibold leading-[0.84] tracking-[-0.035em] text-[#f03b9f]">
                 MR
                 <br />
                 MICROBE
@@ -827,33 +828,41 @@ function MobileMenu({
             <button
               type="button"
               onClick={onClose}
-              className="border border-[#e20074]/55 px-3 py-1.5 text-[11px] font-black uppercase tracking-[0.2em] text-[#e20074]"
+              className="rounded-sm border border-[#f03b9f]/40 bg-[#f03b9f]/7 px-3 py-1.5 text-[10px] font-black uppercase tracking-[0.22em] text-[#f03b9f] transition hover:bg-[#f03b9f]/14"
             >
               Close
             </button>
           </div>
 
-          <nav className="mt-14 space-y-5">
+          <nav className="mt-7">
             {links.map(([label, href]) => (
               <a
                 key={label}
                 href={href}
                 onClick={onClose}
-                className="font-display block text-[clamp(2.4rem,11vw,3.3rem)] font-black uppercase leading-[0.9] tracking-[-0.03em] text-[#e20074]"
+                className="group relative block border-b border-white/10 py-3"
               >
-                {label}
+                <span className="font-display block text-[clamp(1.85rem,8.8vw,2.55rem)] font-black uppercase leading-[0.94] tracking-[-0.02em] text-[#f03b9f] transition-all duration-300 group-hover:translate-x-1.5 group-hover:text-[#ff6abb]">
+                  {label}
+                </span>
+                <span
+                  aria-hidden
+                  className="absolute bottom-0 left-0 h-[2px] w-0 bg-gradient-to-r from-[#f03b9f] to-[#ff8bca] transition-all duration-300 group-hover:w-full"
+                />
+                <span className="mt-1 block text-[10px] font-medium uppercase tracking-[0.2em] text-white/38 transition-colors group-hover:text-white/70">
+                  Explorer
+                </span>
               </a>
             ))}
           </nav>
 
-          <div className="mt-auto space-y-5 pt-8">
+          <div className="mt-auto space-y-5 border-t border-white/10 pt-6">
             <div>
-              <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-[#e20074]/60">Socials</p>
-              <div className="mt-2 flex items-center gap-3 text-[1.9rem] font-semibold leading-none">
+              <div className="mt-2 inline-flex items-center gap-3 rounded-full border border-white/18 bg-white/[0.04] px-4 py-2 text-[1.05rem] font-semibold leading-none text-white/90">
                 <svg
                   aria-hidden
                   viewBox="0 0 24 24"
-                  className="h-7 w-7"
+                  className="h-6 w-6"
                   fill="none"
                   stroke="currentColor"
                   strokeWidth="1.8"
@@ -866,8 +875,8 @@ function MobileMenu({
               </div>
             </div>
             <div>
-              <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-[#e20074]/60">Inquiries</p>
-              <p className="mt-2 break-all text-[1.3rem] font-semibold leading-tight text-[#e20074]">mrmicrobe.furgerot@gmail.com</p>
+              <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-white/35">Inquiries</p>
+              <p className="mt-2 break-all text-[1.05rem] font-semibold leading-tight text-white/88">mrmicrobe.furgerot@gmail.com</p>
             </div>
           </div>
         </div>
@@ -2067,7 +2076,7 @@ export default function Home() {
           </div>
         </section>
 
-        <section id="artiste" className="bg-transparent px-0 py-4 md:py-10">
+        <section id="artiste" className="bg-transparent px-0 py-0 md:py-10">
           <div className="relative px-6 pb-3 md:px-10 md:pb-6">
             <div className="pointer-events-none absolute inset-0 opacity-20 [background-image:linear-gradient(to_right,rgba(0,0,0,0.045)_1px,transparent_1px),linear-gradient(to_bottom,rgba(0,0,0,0.035)_1px,transparent_1px)] [background-size:56px_56px]" />
             <h3 className="title-unified font-display relative mt-0 font-semibold uppercase text-[#0a0a0a]/95 md:mt-2">
