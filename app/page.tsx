@@ -858,7 +858,12 @@ function MobileMenu({
 
           <div className="mt-auto space-y-5 border-t border-white/10 pt-6">
             <div>
-              <div className="mt-2 inline-flex items-center gap-3 rounded-full border border-white/18 bg-white/[0.04] px-4 py-2 text-[1.05rem] font-semibold leading-none text-white/90">
+              <a
+                href="https://www.instagram.com/mrmicrobe.art/"
+                target="_blank"
+                rel="noreferrer"
+                className="mt-2 inline-flex items-center gap-3 rounded-full border border-white/18 bg-white/[0.04] px-4 py-2 text-[1.05rem] font-semibold leading-none text-white/90 transition hover:bg-white/[0.08]"
+              >
                 <svg
                   aria-hidden
                   viewBox="0 0 24 24"
@@ -872,7 +877,7 @@ function MobileMenu({
                   <circle cx="17.2" cy="6.8" r="1.1" fill="currentColor" stroke="none" />
                 </svg>
                 <p>Instagram</p>
-              </div>
+              </a>
             </div>
             <div>
               <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-white/35">Inquiries</p>
